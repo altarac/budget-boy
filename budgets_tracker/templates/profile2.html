@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+<div class="alert alert-primary" role="alert">
+  Hello {{u}}
+</div>
+
+
+
+<div class="col-md-6 offset-3">
+  <form method="POST", action="/profile/{{u}}">
+    {{ form.hidden_tag() }}
+    {{form.code.label(class="form-control-label")}}
+    {{form.code(class="form-control form-control-lg")}}
+
+    {{form.guests_present.label(class="form-control-label")}}
+    {{form.guests_present(class="form-control form-control-lg")}}
+
+  Duration:
+<div class="form-control">
+
+    {% for i in form.duration_of_event %}
+      <div class="form-check form-check-inline">
+        {{i.label(class='form-check-label')}}
+        {{i(class='form-check-input')}}
+      </div>
+    {% endfor %}
+</div>
+
+    <br>
+
+    {{form.date_of_event.label(class="form-label")}}
+    {{form.date_of_event(class="form-control date")}}
+
+
+    <br>
+    {{form.submit(class="btn btn-outline-success form-control form-control-lg")}}
+  </form>
+
+</div>
+<br>
+<br>
+<br>
+
+<!-- <script>
+$( function() {
+  $( "#datepicker" ).datepicker();
+} );
+</script> -->
+
+
+
+{% endblock %}

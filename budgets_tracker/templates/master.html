@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+<div class="row">
+  <div class="col-md-6">
+    <p>
+      <h4>
+        Select a person to view their budgets
+      </h4>
+    </p>
+    <div class="dropdown show">
+      <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Select a person
+      </a>
+      <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+        {% for person in people %}
+          <a class="dropdown-item" href="master/profile/{{person.username}}">{{person.username}}</a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <p>
+      <h4>
+        Add a person to the database
+      </h4>
+    </p>
+    <form method="POST", action="/profile/{{u}}">
+      {{ form.hidden_tag() }}
+      {{form.username.label(class="form-control-label")}}
+      {{form.username(class="form-control form-control-lg")}}
+
+      {{form.password.label(class="form-control-label")}}
+      {{form.password(class="form-control form-control-lg")}}
+
+      <br>
+      {{form.submit(class="btn btn-outline-success form-control form-control-lg")}}
+    </form>
+
+  </div>
+</div>
+
+
+
+{% endblock %}

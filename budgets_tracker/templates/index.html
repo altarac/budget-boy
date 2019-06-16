@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+<form method="POST", action="">
+  {{ form.hidden_tag() }}
+  {{form.username.label(class="form-control-label")}}
+  {{form.username(class="form-control form-control-lg")}}
+
+  <br>
+  {{form.submit(class="btn btn-outline-success form-control form-control-lg")}}
+</form>
+
+
+
+{% endblock %}
