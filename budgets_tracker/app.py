@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, flash, redirect
+from flask import Flask, render_template, url_for, flash, redirect, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, IntegerField, RadioField, TextField, SelectField, DateField
@@ -12,6 +12,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///myDatabase.db'
 # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 
+
 # database below-------------
 
 db = SQLAlchemy(app)
@@ -19,6 +20,7 @@ db = SQLAlchemy(app)
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
+    password = db.Column(db.String(6), nullable=False)
 
     def __repr__(self):
         return f"User('{self.username}')"
@@ -72,7 +74,7 @@ db.create_all()
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
-    # password = PasswordField('Password', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
     # remember = BooleanField('Remember me')
     submit = SubmitField('Login')
 
@@ -123,9 +125,13 @@ class MasterBudgetForm(FlaskForm):
 
 
 @app.route('/', methods=['POST', 'GET'])
-def default():
-    # user1 = User(username='Sam')
-    # user2 = User(username='bob')
+def index():
+    # user = User.query.filter_by(username='Sam')[0]
+    # user.password = '12345'
+
+
+    # user1 = User(username='Sam', password='12345')
+    # user2 = User(username='bob', password='33333')
     # b = Budgets(users = 'Sam', code= '12345', initial_amount='13000', amount_spent = '1000')
     # b2 = Budgets(users = 'Sam', code= '55555', initial_amount='1200', amount_spent = '0')
     # b3 = Budgets(users = 'bob', code= '55555', initial_amount='1200', amount_spent = '0')
@@ -138,8 +144,19 @@ def default():
 
     form = LoginForm()
     if form.validate_on_submit():
+        users = User.query.filter_by(username=f'{form.username.data}', password=f'{form.password.data}').count()
         # flash(f'Logged in as {form.username.data}', category='success')
-        return redirect(f'profile/{form.username.data}')
+        if(users > 0 ):
+            users = User.query.filter_by(username=f'{form.username.data}', password=f'{form.password.data}').first()
+            masteruser = User.query.filter_by(username='Sam', password='12345').first()
+            if(masteruser == users):
+                session['key']=True
+            else:
+                session['key']=False
+            return redirect(f'profile/{form.username.data}')
+        else:
+            session['key']=False
+            return render_template('index.html', form = form)
 
     return render_template('index.html', form = form)
 
@@ -192,6 +209,9 @@ def profile2(name):
 
 @app.route('/master', methods=['POST', 'GET'])
 def master():
+    if(session['key'] == False):
+        return redirect(url_for('index'))
+
     people = User.query.all()
     form = UpdateUserForm()
 
@@ -209,6 +229,9 @@ def masterprofile(name):
     form3 = d()
     b = Budgets.query.filter_by(users=f'{u}')
     events = Event.query.filter_by(users=f'{u}')
+    cs = []
+    for i in b:
+        cs.append(i.code)
 
     if form.validate_on_submit():
         bb = Budgets.query.filter_by(code=f'{form.code.data}')[0]
@@ -233,7 +256,7 @@ def masterprofile(name):
 
         return render_template('masterprofile.html', u = u, b = b, events = events, form = form, form2 =form2, form3 = form3)
 
-    return render_template('masterprofile.html', u = u, b = b, events = events, form = form, form2 =form2, form3 = form3)
+    return render_template('masterprofile.html', u = u, b = b, events = events, form = form, form2 =form2, form3 = form3, cs = cs)
 
 
 @app.route('/master3/profile/<string:name>', methods=['POST', 'GET'])
@@ -245,6 +268,7 @@ def masterprofile3(name):
     form3 = d()
     b = Budgets.query.filter_by(users=f'{u}')
     events = Event.query.filter_by(users=f'{u}')
+
 
 
 

@@ -2,14 +2,20 @@
 
 {% block body %}
 
-<form method="POST", action="">
-  {{ form.hidden_tag() }}
-  {{form.username.label(class="form-control-label")}}
-  {{form.username(class="form-control form-control-lg")}}
+<div class="col-md-6 offset-3">
+  
+  <form method="POST", action="">
+    {{ form.hidden_tag() }}
+    {{form.username.label(class="form-control-label")}}
+    {{form.username(class="form-control form-control-lg")}}
 
-  <br>
-  {{form.submit(class="btn btn-outline-success form-control form-control-lg")}}
-</form>
+    {{form.password.label(class="form-control-label")}}
+    {{form.password(class="form-control form-control-lg")}}
+
+    <br>
+    {{form.submit(class="btn btn-outline-success form-control form-control-lg")}}
+  </form>
+</div>
 
 
 
