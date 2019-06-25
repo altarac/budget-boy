@@ -1,14 +1,24 @@
-from flask import Flask, render_template, url_for, flash, redirect, session
+from flask import Flask, render_template, url_for, flash, redirect, session, send_from_directory, make_response, Response
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, IntegerField, RadioField, TextField, SelectField, DateField
 from wtforms.validators import DataRequired, Length, Email, EqualTo
 from wtforms.fields.html5 import DateField
+from docx import Document
+from docx.shared import Inches
+import datetime
+from os import path, walk
+from werkzeug import secure_filename
+import pdfkit
 
+
+
+# UPLOAD_FOLDER = '/downloads/'
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '14c74a1f98cb8dd7c8a2f68de80c2f78'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///myDatabase.db'
+# app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 
@@ -97,6 +107,7 @@ class UpdateBudgetForm(FlaskForm):
 
     code = SelectField(u'Budget codes')
     guests_present = TextField('People released', validators=[DataRequired(), Length(max=2000)])
+    school = TextField('School', validators=[DataRequired(), Length(max=2000)])
     # spent = IntegerField('Amount Used', validators=[DataRequired()])
     duration_of_event = RadioField('Duration of Release', choices=[('140', 'Half day'), ('250', 'Full day')], validators=[DataRequired()])
     submit = SubmitField('Submit')
@@ -169,6 +180,10 @@ def profile(name):
     form = UpdateBudgetForm()
     b = Budgets.query.filter_by(users=f'{u}')
     form.code.choices = [(g.code, g.code) for g in b]
+    if(Budgets.query.filter_by(users=f'{u}').count() <= 4):
+        b_count = Budgets.query.filter_by(users=f'{u}').count()
+    else:
+        b_count = 4
 
     if form.validate_on_submit():
         bb = Budgets.query.filter_by(users=f'{u}').filter_by(code=f'{str(form.code.data)}')[0]
@@ -186,7 +201,7 @@ def profile(name):
     # spent = b.amount_spent
     # balance = initial_amount-spent
 
-    return render_template('profile.html', u = u, b = b, events = events)
+    return render_template('profile.html', u = u, b = b, events = events, b_count = b_count)
 
 
 @app.route('/profile/<string:name>/update', methods=['POST', 'GET'])
@@ -286,12 +301,44 @@ def masterprofile3(name):
 
 
 
-@app.route('/print')
-def printing():
-    print('sample printing')
+@app.route('/print/<string:name>', methods=['GET','POST'])
+def printing(name):
+    u = name
+    events = Event.query.filter_by(users=f'{u}')
+
+    try:
+        document = Document('/static/demo.docx')
+    except:
+        document = Document()
+
+    document.add_heading('Expense Report 2', 0)
+
+    for e in events:
+        p = document.add_paragraph(f'{e.date_of_event}')
+        p = document.add_paragraph(f'{e.budget_code}')
+        p = document.add_paragraph(f'{e.guests_present}')
+        p = document.add_paragraph(f'{e.amount_spent_on_release}')
+        document.add_page_break()
 
 
-    return render_template('print.html')
+    # document.add_heading('Heading, level 1', level=1)
+    # document.add_paragraph('Intense quote', style='Intense Quote')
+    #
+    # document.add_paragraph(
+    #     'first item in unordered list', style='List Bullet'
+    # )
+    # document.add_paragraph(
+    #     'first item in ordered list', style='List Number'
+    # )
+    #
+    # document.add_page_break()
+
+
+    document.save("static/demo.docx")
+    #
+    # return send_from_directory(directory='static', filename='demo.docx')
+
+    return render_template('print.html', d = document)
 
 
 
@@ -300,4 +347,4 @@ def printing():
 
 
 app.debug=True
-app.run(use_reloader=True, port='8080')
+app.run(use_reloader=True, port='8081')
