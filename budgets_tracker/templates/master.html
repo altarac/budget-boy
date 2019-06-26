@@ -1,14 +1,15 @@
 {% extends 'base_in.html' %}
 
 {% block body %}
-{{session['key']}}
+<br>
 <div class="row">
   <div class="col-md-6">
-    <p>
+
       <h4>
         Select a person to view their budgets
       </h4>
-    </p>
+      
+
     <div class="dropdown show">
       <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         Select a person
@@ -22,22 +23,9 @@
   </div>
 
   <div class="col-md-6">
-    <p>
-      <h4>
-        Add a person to the database
-      </h4>
-    </p>
-    <form method="POST", action="/profile/{{u}}">
-      {{ form.hidden_tag() }}
-      {{form.username.label(class="form-control-label")}}
-      {{form.username(class="form-control form-control-lg")}}
-
-      {{form.password.label(class="form-control-label")}}
-      {{form.password(class="form-control form-control-lg")}}
-
-      <br>
-      {{form.submit(class="btn btn-outline-success form-control form-control-lg")}}
-    </form>
+    <h4>
+      All budget codes:
+    </h4>
 
   </div>
 </div>

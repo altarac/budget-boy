@@ -6,7 +6,6 @@
   {{u}}'s profile {{p}}
 </div>
 
-
 <div class="row">
     <div class="col-md-6">
       <table class="table table-dark">
@@ -32,7 +31,7 @@
           {% endfor %}
         </tbody>
       </table>
-      <a class="btn btn-danger btn-block" onclick="printJS('p', 'html')">Print</a>
+      <a class="btn btn-warning btn-block" href="/master" >Back</a>
     </div>
     <div id="p" class="col-md-6">
       <table class="table table-secondary">
@@ -61,6 +60,127 @@
     </div>
 </div>
 
+<br>
+<br>
+<br>
+
+<hr>
+{% for e in events2 %}
+
+{% for g in e.guests_present.split(',') %}
+
+<div id="releaseForms-1">
+
+
+    <div class="row">
+      <img class="img-fluid mx-auto d-block" src="/static/swlsb.jpg">
+    </div>
+
+
+
+  <div class="row">
+    <div class="col-md-12 text-center">
+      <h4>PEDAGOGICAL SERVICES DEPT (PSD)</h4>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12 text-center">
+      <h5>Teacher Release Time Authorization</h5>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12 text-center">
+      <p>
+        I, Geoffrey Hipps, Director of the Pedagogical Services Department hereby authorize:
+      </p>
+    </div>
+  </div>
+
+  <div style="margin-top: 350px;"  class="row">
+    <div class="col-md-12">
+      <table class="table table-secondary table-bordered">
+        <thead>
+          <tr>
+            <!-- <th scope="row"></th> -->
+            <th scope="col">Name of Teacher</th>
+            <th scope="col">School</th>
+            <th scope="col">Name of Workshop</th>
+            <th scope="col">Date of Release</th>
+            <th scope="col">Workshop Budget Code</th>
+            <th scope="col">Project Code (if applicable)</th>
+          </tr>
+        </thead>
+        <tbody>
+
+
+            <tr>
+
+              <td>{{g}}</td>
+              <td>school name here</td>
+              <td>name of workshop name here</td>
+              <td>{{(e.date_of_event|string)[:-8]}}</td>
+              <td>{{e.budget_code}}</td>
+              <td>N/A</td>
+
+            </tr>
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+
+
+<div class="row">
+  <div class="col-md-12 text-center">
+    <p>
+<h5>KINDLY TAKE NOTE THAT ALL SIGNED PSD RELEASES ARE TO BE SUBMITTED IN ATTCHMENT TO YOUR TIMESHEET(S) & ABSENT FORMS(S).</h5>
+</p>
+</div>
+</div>
+
+<div class="row">
+  <div class="col-md-12 text-center">
+    <p>
+<h5>PAYROLL WILL NOT PROCESS YOUR (RESPECTIVE SCHOOL) RELEASE(S) WITHOUT THIS FORM.</h5>
+</p>
+</div>
+</div>
+
+<div class="row">
+  <div class="col-md-12 text-center">
+    <p>
+<h5>signature goes here...</h5>
+</p>
+</div>
+
+</div>
+
+
+
+<div class="row">
+  <img style="margin-top: 600px;"  class="img-fluid mx-auto d-block" src="/static/foot.png">
+</div>
+
+
+
+
+<hr style = 'page-break-after: always;'>
+
+{% endfor %}
+
+{% endfor %}
+
+</div>
+
+
+
+  <a class="btn btn-danger btn-block col-md-4 offset-4" onclick="printJS({ printable: 'releaseForms-1', type: 'html', css:'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css'})"> Print <img style="width:10px; height:10px" src='/static/printer-.svg'></img> </a>
+
+  <a href="/print/{{u}}" class="btn btn-primary btn-block col-md-4 offset-4"> Refresh</a>
+
+
+
+<br>
 
 
 
@@ -69,7 +189,137 @@
 
 
 
-<div id="accordion">
+
+
+
+
+
+
+
+<!-- /fjdbkewjhvfjherfvkjerfkuj -->
+
+
+<button class="btn btn-warning btn-block" type="button" data-toggle="collapse" data-target="#multiCollapseExample2" aria-expanded="false" aria-controls="multiCollapseExample2">Archived</button>
+
+<div class="col">
+   <div class="collapse multi-collapse" id="multiCollapseExample2">
+     <div class="card card-body">
+
+       {% for e in events %}
+
+       {% for g in e.guests_present.split(',') %}
+
+       <div id="releaseForms">
+
+
+           <div class="row">
+             <img class="img-fluid mx-auto d-block" src="/static/swlsb.jpg">
+           </div>
+
+
+
+         <div class="row">
+           <div class="col-md-12 text-center">
+             <h4>PEDAGOGICAL SERVICES DEPT (PSD)</h4>
+           </div>
+         </div>
+         <div class="row">
+           <div class="col-md-12 text-center">
+             <h5>Teacher Release Time Authorization</h5>
+           </div>
+         </div>
+         <div class="row">
+           <div class="col-md-12 text-center">
+             <p>
+               I, Geoffrey Hipps, Director of the Pedagogical Services Department hereby authorize:
+             </p>
+           </div>
+         </div>
+
+         <div class="row">
+           <div class="col-md-12">
+             <table class="table table-secondary table-bordered">
+               <thead>
+                 <tr>
+                   <!-- <th scope="row"></th> -->
+                   <th scope="col">Name of Teacher</th>
+                   <th scope="col">School</th>
+                   <th scope="col">Name of Workshop</th>
+                   <th scope="col">Date of Release</th>
+                   <th scope="col">Workshop Budget Code</th>
+                   <th scope="col">Project Code (if applicable)</th>
+                 </tr>
+               </thead>
+               <tbody>
+
+
+                   <tr>
+
+                     <td>{{g}}</td>
+                     <td>school name here</td>
+                     <td>name of workshop name here</td>
+                     <td>{{(e.date_of_event|string)[:-8]}}</td>
+                     <td>{{e.budget_code}}</td>
+                     <td>N/A</td>
+
+                   </tr>
+               </tbody>
+             </table>
+
+           </div>
+         </div>
+
+
+       <div class="row">
+         <div class="col-md-12 text-center">
+           <p>
+       <h5>KINDLY TAKE NOTE THAT ALL SIGNED PSD RELEASES ARE TO BE SUBMITTED IN ATTCHMENT TO YOUR TIMESHEET(S) & ABSENT FORMS(S).</h5>
+       </p>
+       </div>
+       </div>
+
+       <div class="row">
+         <div class="col-md-12 text-center">
+           <p>
+       <h5>PAYROLL WILL NOT PROCESS YOUR (RESPECTIVE SCHOOL) RELEASE(S) WITHOUT THIS FORM.</h5>
+       </p>
+       </div>
+       </div>
+
+       <div class="row">
+         <div class="col-md-12 text-center">
+           <p>
+       <h5>signature goes here...</h5>
+       </p>
+       </div>
+
+       </div>
+
+       <div class="row">
+         <img class="img-fluid mx-auto d-block" src="/static/foot.png">
+       </div>
+
+
+
+
+       <hr>
+
+       {% endfor %}
+
+       {% endfor %}
+
+
+
+     </div>
+   </div>
+ </div>
+
+
+
+
+
+
+<!-- <div id="accordion">
   <div class="card">
     <div class="card-header" id="headingOne">
       <h5 class="mb-0">
@@ -241,13 +491,13 @@
       </div>
     </div>
   </div>
-</div>
+</div> -->
 
 <br>
 <br>
 <br>
 
-</div>
+<!-- </div> -->
 
 <!-- ------------ modals below ------------ -->
 

@@ -1,5 +1,6 @@
 from flask import Flask, render_template, url_for, flash, redirect, session, send_from_directory, make_response, Response
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import desc
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, IntegerField, RadioField, TextField, SelectField, DateField
 from wtforms.validators import DataRequired, Length, Email, EqualTo
@@ -7,9 +8,9 @@ from wtforms.fields.html5 import DateField
 from docx import Document
 from docx.shared import Inches
 import datetime
-from os import path, walk
-from werkzeug import secure_filename
-import pdfkit
+import pandas as pd
+import sqlite3
+
 
 
 
@@ -31,17 +32,19 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
     password = db.Column(db.String(6), nullable=False)
+    budgets_access = db.Column(db.String(100), unique=False, nullable=True)
+
 
     def __repr__(self):
         return f"User('{self.username}')"
 
 class Budgets(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    users = db.Column(db.String(40), unique=False, nullable=False)
+    # users = db.Column(db.String(40), unique=False, nullable=False)
     code = db.Column(db.String(20), unique=False, nullable=False)
     initial_amount = db.Column(db.Integer, nullable=False)
     amount_spent = db.Column(db.Integer, nullable=True)
-    # current_amount = db.Column(db.Integer, nullable=False)
+
 
 
     def __repr__(self):
@@ -56,6 +59,8 @@ class Event(db.Model):
     duration_of_event = db.Column(db.Integer, nullable=False)
     amount_spent_on_release = db.Column(db.Integer, nullable=True)
     date_of_event = db.Column(db.DateTime, nullable=False)
+    is_processed = db.Column(db.Integer, nullable=True)
+
     # current_amount = db.Column(db.Integer, nullable=False)
 
 
@@ -100,6 +105,10 @@ class d(FlaskForm):
     code3 = StringField(u'Budget code')
     submit = SubmitField('Delete')
 
+class p(FlaskForm):
+    event_id = StringField('Event id')
+    submit = SubmitField('Print')
+
 
 
 class UpdateBudgetForm(FlaskForm):
@@ -141,14 +150,13 @@ def index():
     # user.password = '12345'
 
 
-    # user1 = User(username='Sam', password='12345')
-    # user2 = User(username='bob', password='33333')
-    # b = Budgets(users = 'Sam', code= '12345', initial_amount='13000', amount_spent = '1000')
-    # b2 = Budgets(users = 'Sam', code= '55555', initial_amount='1200', amount_spent = '0')
-    # b3 = Budgets(users = 'bob', code= '55555', initial_amount='1200', amount_spent = '0')
-    # db.session.add(b)
+    # user1 = User(username='Sam', password='12345', budgets_access='55555, 12345')
+    # user2 = User(username='bob', password='33333', budgets_access='55555')
+    # b1 = Budgets(code= '12345', initial_amount='13000', amount_spent = '1000')
+    # b2 = Budgets(code= '55555', initial_amount='1200', amount_spent = '10')
+    #
+    # db.session.add(b1)
     # db.session.add(b2)
-    # db.session.add(b3)
     # db.session.add(user1)
     # db.session.add(user2)
     # db.session.commit()
@@ -178,18 +186,25 @@ def index():
 def profile(name):
     u = name
     form = UpdateBudgetForm()
-    b = Budgets.query.filter_by(users=f'{u}')
-    form.code.choices = [(g.code, g.code) for g in b]
-    if(Budgets.query.filter_by(users=f'{u}').count() <= 4):
-        b_count = Budgets.query.filter_by(users=f'{u}').count()
+    tables = []
+    x = User.query.filter_by(username=f'{u}')[0]
+    codes = x.budgets_access.split(',')
+    for c in codes:
+        b = Budgets.query.filter_by(code=int(c)).first()
+        tables.append(b)
+
+    form.code.choices = [(int(g), int(g)) for g in codes]
+
+    if(len(codes) <= 4):
+        b_count = len(codes)
     else:
         b_count = 4
 
-    if form.validate_on_submit():
-        bb = Budgets.query.filter_by(users=f'{u}').filter_by(code=f'{str(form.code.data)}')[0]
+    if form.is_submitted():
+        bb = Budgets.query.filter_by(code=f'{str(form.code.data)}')[0]
         bb.amount_spent = bb.amount_spent + len(form.guests_present.data.split(','))*int(form.duration_of_event.data)
 
-        e = Event(guests_present=form.guests_present.data, budget_code=form.code.data, duration_of_event=form.duration_of_event.data, amount_spent_on_release=len(form.guests_present.data.split(','))*int(form.duration_of_event.data), date_of_event=form.date_of_event.data, users = u)
+        e = Event(guests_present=form.guests_present.data, budget_code=form.code.data, duration_of_event=form.duration_of_event.data, amount_spent_on_release=len(form.guests_present.data.split(','))*int(form.duration_of_event.data), date_of_event=form.date_of_event.data, users = u, is_processed = 0)
         db.session.add(e)
         db.session.commit()
         # return redirect(f'profile/{u}')
@@ -201,23 +216,32 @@ def profile(name):
     # spent = b.amount_spent
     # balance = initial_amount-spent
 
-    return render_template('profile.html', u = u, b = b, events = events, b_count = b_count)
+    return render_template('profile.html', u = u, tables = tables, events = events, b_count = b_count, x = codes)
 
 
 @app.route('/profile/<string:name>/update', methods=['POST', 'GET'])
 def profile2(name):
-    form = UpdateBudgetForm()
-
+    # form = UpdateBudgetForm()
+    # u = name
+    # b = Budgets.query.filter_by(users=f'{u}')
+    # .filter_by('budgets_access')
+    # b = User.query.filter_by(f'{u}')
     u = name
-    b = Budgets.query.filter_by(users=f'{u}')
+    form = UpdateBudgetForm()
+    tables = []
+    x = User.query.filter_by(username=f'{u}')[0]
+    codes = x.budgets_access.split(',')
+    for c in codes:
+        b = Budgets.query.filter_by(code=int(c)).first()
+        tables.append(b)
 
-    form.code.choices = [(g.code, g.code) for g in b]
+    form.code.choices = [(int(g), int(g)) for g in codes]
     # code = b.code
     # initial_amount = b.initial_amount
     # spent = b.amount_spent
     # balance = initial_amount-spent
 
-    return render_template('profile2.html', u = u, b= b, form =form)
+    return render_template('profile2.html', u = u, b= tables, form =form)
 
 
 
@@ -227,11 +251,27 @@ def master():
     if(session['key'] == False):
         return redirect(url_for('index'))
 
+    cnx = sqlite3.connect('myDatabase.db')
+
+
+    df = pd.read_sql_query("SELECT * FROM Event", cnx)
+    df2 = pd.read_sql_query("SELECT * FROM Event", cnx).to_html()
+
+
     people = User.query.all()
-    form = UpdateUserForm()
+    res = []
+
+    budget_codes = Budgets.query.all()
 
 
-    return render_template('master.html', people = people, form = form)
+    for b in budget_codes:
+        e = Event.query.filter_by(budget_code=b.code).first()
+        if e:
+            res.append(e)
+
+
+
+    return render_template('master.html', people = people, res = res, df = df, df2 = df2)
 
 
 
@@ -242,11 +282,21 @@ def masterprofile(name):
     form = MasterBudgetForm()
     form2 = addToBudgetForm()
     form3 = d()
-    b = Budgets.query.filter_by(users=f'{u}')
-    events = Event.query.filter_by(users=f'{u}')
-    cs = []
-    for i in b:
-        cs.append(i.code)
+    printform = p()
+    tables = []
+    x = User.query.filter_by(username=f'{u}')[0]
+    codes = x.budgets_access.split(',')
+    for c in codes:
+        b = Budgets.query.filter_by(code=int(c)).first()
+        tables.append(b)
+    events = Event.query.filter_by(users=f'{u}').order_by(desc(Event.budget_code))
+    cs = codes
+
+
+    y =Event.query.filter_by(users=f'{u}').order_by(desc(Event.budget_code)).filter_by(is_processed='0')
+
+    events2 = y
+
 
     if form.validate_on_submit():
         bb = Budgets.query.filter_by(code=f'{form.code.data}')[0]
@@ -254,24 +304,33 @@ def masterprofile(name):
         bb.amount_spent = int(form.amount_spent.data)
         db.session.commit()
 
-        return render_template('masterprofile.html', u = u, b = b, events = events, form = form, form2 = form2, form3 = form3)
+        return render_template('masterprofile.html', u = u, b = tables, events = events, form = form, form2 = form2, form3 = form3, printform = printform, events2 = events2)
 
     if form2.is_submitted():
-        new_budget = Budgets(code = form2.code.data, users = u, initial_amount = int(form2.initial_amount.data), amount_spent = int(form2.amount_spent.data))
+        new_budget = Budgets(code = form2.code.data, initial_amount = int(form2.initial_amount.data), amount_spent = int(form2.amount_spent.data))
         db.session.add(new_budget)
         db.session.commit()
 
-        return render_template('masterprofile.html', u = u, b = b, events = events, form = form, form2 = form2, form3 = form3)
+        return render_template('masterprofile.html', u = u, b = tables, events = events, form = form, form2 = form2, form3 = form3, printform = printform, events2 = events2)
 
 
     if form3.is_submitted():
-        budge = Budgets.query.filter_by(users = f'{u}').filter_by(code = f'{form3.code3.data}').first()
-        db.session.delete(budge)
+        xx = User.query.filter_by(username=f'{u}')[0]
+        codes = x.budgets_access.split(',')
+        codes = codes.pop(str(codes.index(str(form3.code3.data))))
+        uu = User.query.filter_by(username=f'{u}')[0]
+        uu.budgets_access = codes
         db.session.commit()
 
-        return render_template('masterprofile.html', u = u, b = b, events = events, form = form, form2 =form2, form3 = form3)
+        return render_template('masterprofile.html', u = u, b = b, events = events, form = form, form2 =form2, form3 = form3, printform = printform, events2 = events2)
 
-    return render_template('masterprofile.html', u = u, b = b, events = events, form = form, form2 =form2, form3 = form3, cs = cs)
+    if printform.is_submitted():
+
+        db.session.commit()
+
+        return render_template('masterprofile.html', u = u, b = b, events = events, form = form, form2 =form2, form3 = form3, printform = printform, events2 = events2)
+
+    return render_template('masterprofile.html', u = u, b = tables, events = events, form = form, form2 =form2, form3 = form3, cs = cs, printform = printform, events2 = events2)
 
 
 @app.route('/master3/profile/<string:name>', methods=['POST', 'GET'])
@@ -281,20 +340,29 @@ def masterprofile3(name):
     form = MasterBudgetForm()
     form2 = addToBudgetForm()
     form3 = d()
-    b = Budgets.query.filter_by(users=f'{u}')
+
+    tables = []
+    x = User.query.filter_by(username=f'{u}')[0]
+    codes = x.budgets_access.split(',')
+    for c in codes:
+        b = Budgets.query.filter_by(code=int(c)).first()
+        tables.append(b)
+    # b = Budgets.query.filter_by(users=f'{u}')
     events = Event.query.filter_by(users=f'{u}')
 
 
 
 
     if form3.is_submitted():
-        budge = Budgets.query.filter_by(users = f'{u}').filter_by(code = f'{form3.code3.data}').first()
-        db.session.delete(budge)
+
+        codes = codes.pop(codes.index(str(form3.code3.data)))
+        uu = User.query.filter_by(username=f'{u}')[0]
+        uu.budgets_access = codes
         db.session.commit()
 
-        return render_template('masterprofile.html', u = u, b = b, events = events, form = form, form2 =form2, form3 = form3)
+        return render_template('masterprofile.html', u = u, b = tables, events = events, form = form, form2 =form2, form3 = form3)
 
-    return render_template('masterprofile.html', u = u, b = b, events = events, form = form, form2 =form2, form3 = form3)
+    return render_template('masterprofile.html', u = u, b = tables, events = events, form = form, form2 = form2, form3 = form3)
 
 
 
@@ -304,41 +372,27 @@ def masterprofile3(name):
 @app.route('/print/<string:name>', methods=['GET','POST'])
 def printing(name):
     u = name
-    events = Event.query.filter_by(users=f'{u}')
 
-    try:
-        document = Document('/static/demo.docx')
-    except:
-        document = Document()
+    if(session['key'] == False):
+        return redirect(url_for('index'))
 
-    document.add_heading('Expense Report 2', 0)
+    people = User.query.all()
+    res = []
 
-    for e in events:
-        p = document.add_paragraph(f'{e.date_of_event}')
-        p = document.add_paragraph(f'{e.budget_code}')
-        p = document.add_paragraph(f'{e.guests_present}')
-        p = document.add_paragraph(f'{e.amount_spent_on_release}')
-        document.add_page_break()
+    budget_codes = Budgets.query.all()
 
 
-    # document.add_heading('Heading, level 1', level=1)
-    # document.add_paragraph('Intense quote', style='Intense Quote')
-    #
-    # document.add_paragraph(
-    #     'first item in unordered list', style='List Bullet'
-    # )
-    # document.add_paragraph(
-    #     'first item in ordered list', style='List Number'
-    # )
-    #
-    # document.add_page_break()
+    for b in budget_codes:
+        ev = Event.query.filter_by(budget_code=b.code).first()
+        if ev:
+            res.append(ev)
 
+    e = Event.query.filter_by(users=f'{u}').all()
+    for i in e:
+        i.is_processed = 1
+    db.session.commit()
 
-    document.save("static/demo.docx")
-    #
-    # return send_from_directory(directory='static', filename='demo.docx')
-
-    return render_template('print.html', d = document)
+    return redirect(url_for('master'))
 
 
 

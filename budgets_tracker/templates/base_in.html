@@ -9,7 +9,6 @@
 <script type="text/javascript" src="https://printjs-4de6.kxcdn.com/print.min.js"></script>
 
 
-
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -42,10 +41,21 @@
 
           </li>
 
+          {% if session['key']==True %}
+
           <li class="nav-item">
             <a class="nav-link" href="/master">Master View</a>
 
           </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/master">Create budgets</a>
+
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/master">Add user</a>
+
+          </li>
+          {% endif %}
 
 
           <!-- <li class="nav-item dropdown">

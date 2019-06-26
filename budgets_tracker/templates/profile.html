@@ -22,14 +22,16 @@
       </thead>
       <tbody>
 
-        {% for line in b %}
+        {% for line in tables %}
+        {% if line %}
           <tr>
             <th scope="row">{{loop.index}}</th>
             <td>{{line.code}}</td>
-            <td>{{line.initial_amount}}</td>
+            <td>{{line.initial_amount|int}}</td>
             <td>{{line.amount_spent}}</td>
-            <td>{{line.initial_amount - line.amount_spent}}</td>
+            <td>{{line.initial_amount|int - line.amount_spent|int}}</td>
           </tr>
+        {% endif %}
         {% endfor %}
       </tbody>
     </table>
@@ -37,7 +39,7 @@
 
     <div class="row">
 
-    {% for i in b %}
+    {% for i in tables %}
       <div onload="script();" class="charts col-md-{{(12 / b_count)|int}}">
         {{i.code}}
         <canvas id="myChart{{i.code}}" width="400" height="400"></canvas>
@@ -95,6 +97,7 @@
       <tbody>
 
         {% for e in events %}
+        
           <tr>
             <th scope="row">{{loop.index}}</th>
             <td>{{e.date_of_event}}</td>
