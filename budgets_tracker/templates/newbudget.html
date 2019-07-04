@@ -1,0 +1,30 @@
+{% extends 'base_in.html' %}
+
+{% block body %}
+
+<div class="col-md-6 offset-3">
+
+  <h1>Create Budgets</h1>
+
+  <form method="POST", action="">
+    {{ form.hidden_tag() }}
+    {{form.code.label(class="form-control-label")}}
+    {{form.code(class="form-control form-control-lg")}}
+
+    {{form.project_name.label(class="form-control-label")}}
+    {{form.project_name(class="form-control form-control-lg")}}
+
+    {{form.initial_amount.label(class="form-control-label")}}
+    {{form.initial_amount(class="form-control form-control-lg")}}
+
+
+    {{form.amount_spent.label(class="form-control-label")}}
+    {{form.amount_spent(class="form-control form-control-lg")}}
+
+    <br>
+    {{form.submit(class="btn btn-outline-success form-control form-control-lg")}}
+  </form>
+</div>
+
+
+{% endblock %}

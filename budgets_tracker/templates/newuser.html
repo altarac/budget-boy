@@ -1,0 +1,27 @@
+{% extends 'base_in.html' %}
+
+{% block body %}
+
+<div class="col-md-6 offset-3">
+<h1>Add New User</h1>
+  <form method="POST", action="">
+    {{ form.hidden_tag() }}
+    {{form.username.label(class="form-control-label")}}
+    {{form.username(class="form-control form-control-lg")}}
+
+    {{form.password.label(class="form-control-label")}}
+    {{form.password(class="form-control form-control-lg")}}
+
+    {{form.password2.label(class="form-control-label")}}
+    {{form.password2(class="form-control form-control-lg")}}
+
+    {{form.budgets_access.label(class="form-control-label")}}
+    {{form.budgets_access(class="form-control form-control-lg")}}
+
+    <br>
+    {{form.submit(class="btn btn-outline-success form-control form-control-lg")}}
+  </form>
+</div>
+
+
+{% endblock %}

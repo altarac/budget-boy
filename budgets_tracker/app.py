@@ -96,6 +96,7 @@ class LoginForm(FlaskForm):
 
 class addToBudgetForm(FlaskForm):
     code = StringField(u'Budget code')
+    project_name = StringField('Project name')
     initial_amount = IntegerField('Initial amount')
     amount_spent = IntegerField('Amount already spent')
     submit = SubmitField('Create')
@@ -124,9 +125,10 @@ class UpdateBudgetForm(FlaskForm):
 
 
 class UpdateUserForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
-    password = PasswordField('Password', validators=[DataRequired(), Length(min=8, max=20)])
-
+    username = StringField('Username', validators=[DataRequired(), Length(min=2, max=50)])
+    password = PasswordField('Password', validators=[DataRequired(), Length(min=6, max=20)])
+    password2 = PasswordField('Verify password', validators=[DataRequired(), Length(min=6, max=20)])
+    budgets_access = StringField('Budget access')
     submit = SubmitField('Submit')
 
 
@@ -423,6 +425,22 @@ def printing(name):
     db.session.commit()
 
     return redirect(url_for('master'))
+
+
+
+@app.route('/newbudget', methods=['GET','POST'])
+def newbudget():
+    form=addToBudgetForm()
+
+    return render_template('newbudget.html', form = form)
+
+
+@app.route('/newuser', methods=['GET','POST'])
+def newuser():
+    form=UpdateUserForm()
+
+    return render_template('newuser.html', form = form)
+
 
 
 
