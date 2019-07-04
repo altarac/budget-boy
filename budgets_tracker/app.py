@@ -259,6 +259,9 @@ def master():
 
 
     people = User.query.all()
+    codes = Budgets.query.all()
+
+
     res = []
 
     budget_codes = Budgets.query.all()
@@ -271,7 +274,7 @@ def master():
 
 
 
-    return render_template('master.html', people = people, res = res, df = df, df2 = df2)
+    return render_template('master.html', people = people, res = res, df = df, df2 = df2, codes = codes)
 
 
 
@@ -331,6 +334,33 @@ def masterprofile(name):
         return render_template('masterprofile.html', u = u, b = b, events = events, form = form, form2 =form2, form3 = form3, printform = printform, events2 = events2)
 
     return render_template('masterprofile.html', u = u, b = tables, events = events, form = form, form2 =form2, form3 = form3, cs = cs, printform = printform, events2 = events2)
+
+
+
+
+
+
+
+
+@app.route('/master2/profile2/<string:budget_code>', methods=['POST', 'GET'])
+def masterprofile2(budget_code):
+    bc = budget_code
+    # form = updateAndNew()
+
+    printform = p()
+
+
+    events = Event.query.filter_by(budget_code=f'{bc}')
+
+    return render_template('masterprofile2.html', events = events, bc= bc, printform = printform)
+
+
+
+
+
+
+
+
 
 
 @app.route('/master3/profile/<string:name>', methods=['POST', 'GET'])

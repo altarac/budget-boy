@@ -8,7 +8,7 @@
       <h4>
         Select a person to view their budgets
       </h4>
-      
+
 
     <div class="dropdown show">
       <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -24,8 +24,18 @@
 
   <div class="col-md-6">
     <h4>
-      All budget codes:
+      Select a budget code to view all activity
     </h4>
+    <div class="dropdown show">
+      <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Select a budget code
+      </a>
+      <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+        {% for code in codes %}
+          <a class="dropdown-item" href="/master2/profile2/{{code.code}}">{{code.code}}</a>
+        {% endfor %}
+      </div>
+    </div>
 
   </div>
 </div>
