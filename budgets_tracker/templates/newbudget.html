@@ -6,7 +6,7 @@
 
   <h1>Create Budgets</h1>
 
-  <form method="POST", action="">
+  <form method="POST", action="/newbudget">
     {{ form.hidden_tag() }}
     {{form.code.label(class="form-control-label")}}
     {{form.code(class="form-control form-control-lg")}}
@@ -24,6 +24,12 @@
     <br>
     {{form.submit(class="btn btn-outline-success form-control form-control-lg")}}
   </form>
+</div>
+
+<div>
+  {% for i in bb %}
+  {{i.code}},
+  {% endfor %}
 </div>
 
 

@@ -41,7 +41,8 @@ class User(db.Model):
 class Budgets(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     # users = db.Column(db.String(40), unique=False, nullable=False)
-    code = db.Column(db.String(20), unique=False, nullable=False)
+    code = db.Column(db.String(20), unique=True, nullable=False)
+    project_name = db.Column(db.String(100), unique=False, nullable=True)
     initial_amount = db.Column(db.Integer, nullable=False)
     amount_spent = db.Column(db.Integer, nullable=True)
 
@@ -60,7 +61,7 @@ class Event(db.Model):
     amount_spent_on_release = db.Column(db.Integer, nullable=True)
     date_of_event = db.Column(db.DateTime, nullable=False)
     is_processed = db.Column(db.Integer, nullable=True)
-
+    project_name = db.Column(db.String(100), unique=False, nullable=True)
     # current_amount = db.Column(db.Integer, nullable=False)
 
 
@@ -70,7 +71,7 @@ class Event(db.Model):
 
 
 
-db.create_all()
+
 
 
 # add db data below-------------
@@ -151,11 +152,12 @@ def index():
     # user = User.query.filter_by(username='Sam')[0]
     # user.password = '12345'
 
-
+    # db.create_all()
+    #
     # user1 = User(username='Sam', password='12345', budgets_access='55555, 12345')
     # user2 = User(username='bob', password='33333', budgets_access='55555')
-    # b1 = Budgets(code= '12345', initial_amount='13000', amount_spent = '1000')
-    # b2 = Budgets(code= '55555', initial_amount='1200', amount_spent = '10')
+    # b1 = Budgets(code= '12345', project_name='ebpp', initial_amount='13000', amount_spent = '1000')
+    # b2 = Budgets(code= '55555', project_name='NA', initial_amount='1200', amount_spent = '10')
     #
     # db.session.add(b1)
     # db.session.add(b2)
@@ -206,7 +208,8 @@ def profile(name):
         bb = Budgets.query.filter_by(code=f'{str(form.code.data)}')[0]
         bb.amount_spent = bb.amount_spent + len(form.guests_present.data.split(','))*int(form.duration_of_event.data)
 
-        e = Event(guests_present=form.guests_present.data, budget_code=form.code.data, duration_of_event=form.duration_of_event.data, amount_spent_on_release=len(form.guests_present.data.split(','))*int(form.duration_of_event.data), date_of_event=form.date_of_event.data, users = u, is_processed = 0)
+        e = Event(guests_present=form.guests_present.data, budget_code=form.code.data,
+        project_name=bb.project_name, duration_of_event=form.duration_of_event.data, amount_spent_on_release=len(form.guests_present.data.split(','))*int(form.duration_of_event.data), date_of_event=form.date_of_event.data, users = u, is_processed = 0)
         db.session.add(e)
         db.session.commit()
         # return redirect(f'profile/{u}')
@@ -432,14 +435,34 @@ def printing(name):
 def newbudget():
     form=addToBudgetForm()
 
-    return render_template('newbudget.html', form = form)
+    bb = Budgets.query.all()
+
+
+    if form.is_submitted():
+        b = Budgets(code= f'{form.code.data}', project_name = f'{form.project_name.data}', initial_amount=f'{form.initial_amount.data}', amount_spent = f'{form.amount_spent.data}')
+        db.session.add(b)
+        db.session.commit()
+
+
+    return render_template('newbudget.html', form = form, bb = bb)
 
 
 @app.route('/newuser', methods=['GET','POST'])
 def newuser():
     form=UpdateUserForm()
 
-    return render_template('newuser.html', form = form)
+    u = User.query.all()
+
+
+    if form.is_submitted():
+        if(form.password.data == form.password2.data):
+            user = User(username= f'{form.username.data}', password=f'{form.password.data}', budgets_access = f'{form.budgets_access.data}')
+            db.session.add(user)
+            db.session.commit()
+
+
+
+    return render_template('newuser.html', form = form, u = u)
 
 
 
