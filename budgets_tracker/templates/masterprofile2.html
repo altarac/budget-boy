@@ -46,12 +46,12 @@
         <thead>
           <tr>
             <!-- <th scope="row"></th> -->
-            <th scope="col">Name of Teacher</th>
-            <th scope="col">School</th>
-            <th scope="col">Name of Workshop</th>
-            <th scope="col">Date of Release</th>
-            <th scope="col">Workshop Budget Code</th>
-            <th scope="col">Project Code (if applicable)</th>
+            <th class="text-center" scope="col">Name of Teacher</th>
+            <th class="text-center" scope="col">School</th>
+            <th class="text-center" scope="col">Name of Workshop</th>
+            <th class="text-center" scope="col">Date of Release</th>
+            <th class="text-center" scope="col">Workshop Budget Code</th>
+            <th class="text-center" scope="col">Project Code (if applicable)</th>
           </tr>
         </thead>
         <tbody>
@@ -59,12 +59,12 @@
 
             <tr>
 
-              <td>{{g}}</td>
-              <td>school name here</td>
-              <td>name of workshop name here</td>
-              <td>{{(e.date_of_event|string)[:-8]}}</td>
-              <td>{{e.budget_code}}</td>
-              <td>{{e.project_name}}</td>
+              <td class="text-center">{{g}}</td>
+              <td class="text-center">school name goes here</td>
+              <td class="text-center">name of workshop goes here</td>
+              <td class="text-center">{{(e.date_of_event|string)[:-8]}}</td>
+              <td class="text-center">{{e.budget_code}}</td>
+              <td class="text-center">{{e.project_name}}</td>
 
             </tr>
         </tbody>

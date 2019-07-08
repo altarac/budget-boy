@@ -94,6 +94,14 @@ class LoginForm(FlaskForm):
     # remember = BooleanField('Remember me')
     submit = SubmitField('Login')
 
+class ModifyUserForm(FlaskForm):
+    # # x = User.query.all()
+    username = SelectField(u'User names')
+    budget_code = SelectField(u'Budget code')
+    # username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
+    # budget_code = StringField('Busget code')
+    submit = SubmitField('Done')
+
 
 class addToBudgetForm(FlaskForm):
     code = StringField(u'Budget code')
@@ -114,9 +122,8 @@ class p(FlaskForm):
 
 
 class UpdateBudgetForm(FlaskForm):
-
-
     code = SelectField(u'Budget codes')
+    tag = TextField('tag', validators=[Length(max=10)])
     guests_present = TextField('People released', validators=[DataRequired(), Length(max=2000)])
     school = TextField('School', validators=[DataRequired(), Length(max=2000)])
     # spent = IntegerField('Amount Used', validators=[DataRequired()])
@@ -465,11 +472,38 @@ def newuser():
     return render_template('newuser.html', form = form, u = u)
 
 
+@app.route('/modifyuser', methods=['GET','POST'])
+def modifyuser():
+    form=ModifyUserForm()
 
+    u = User.query.all()
+    b = Budgets.query.all()
+
+    form.username.choices = [(str(g.username), str(g.username)) for g in u]
+    form.budget_code.choices = [(str(g.code), str(g.code)) for g in b]
+
+
+
+    if form.is_submitted():
+
+        user = User.query.filter_by(username=f'{form.username.data}')[0]
+        user.budgets_access = user.budgets_access + f', {form.budget_code.data}'
+        db.session.commit()
+
+
+
+    return render_template('modifyuser.html', form = form, u = u)
+
+
+
+@app.route('/tutorial/<string:name>')
+def tutorial(name):
+    u = name
+    return render_template('tutorial.html', u = u)
 
 
 
 
 
 app.debug=True
-app.run(use_reloader=True, port='8081')
+app.run(use_reloader=True, port='8082')

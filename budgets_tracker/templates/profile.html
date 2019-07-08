@@ -5,9 +5,36 @@
 <div class="alert alert-primary" role="alert">
   Hello {{u}}
 </div>
+
+{% if session['key']==True %}
+
+
+
+  <div class="col-md-8 offset-2">
+    <button class="btn btn-primary btn-block" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+      Tutorial Video
+    </button>
+  </div>
+
+<div class="collapse" id="collapseExample">
+  <div class="card card-body">
+    <div class="col-md-8 offset-2">
+      <div class="embed-responsive embed-responsive-16by9">
+        <iframe class="embed-responsive-item" width="560" height="315" src="https://www.youtube.com/embed/X_tYrnv_o6A" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% endif %}
+
+<br>
+
+
 <div class="row">
   <div class="col-md-6">
-    <h3>
+    <h3 class="text-center">
       Your budgets:
     </h3>
     <table class="table table-dark">
@@ -18,26 +45,32 @@
           <th scope="col">Initial Amount</th>
           <th scope="col">Spent</th>
           <th scope="col">Balance</th>
+          <th scope="col">% used</th>
         </tr>
       </thead>
       <tbody>
 
         {% for line in tables %}
         {% if line %}
+
+        {% set balance = (line.initial_amount - line.amount_spent) %}
+
           <tr>
             <th scope="row">{{loop.index}}</th>
             <td>{{line.code}}</td>
             <td>{{line.initial_amount|int}}</td>
             <td>{{line.amount_spent}}</td>
-            <td>{{line.initial_amount|int - line.amount_spent|int}}</td>
+            <td>{{balance}}</td>
+            <td>{{((1 - (balance/line.initial_amount)|round(2))*100)|int}} %</td>
           </tr>
+
         {% endif %}
         {% endfor %}
       </tbody>
     </table>
     <a href="/profile/{{u}}/update" class="btn btn-warning btn-block">New event</a>
     <br>
-    <h4>Your spending at a glance</h4>
+    <h4 class="text-center">Your spending at a glance</h4>
     <div class="row">
 
     {% for i in tables %}
@@ -82,7 +115,7 @@
 
   </div>
   <div class="col-md-6">
-    <h3>
+    <h3 class="text-center">
       Your expenses to date:
     </h3>
     <table class="table table-dark">

@@ -2,35 +2,63 @@
 
 {% block body %}
 
-<div class="col-md-6 offset-3">
+<div class="row">
+  <div class="col-md-6">
 
-  <h1>Create Budgets</h1>
+    <h1 class="text-center">Create Budgets</h1>
 
-  <form method="POST", action="/newbudget">
-    {{ form.hidden_tag() }}
-    {{form.code.label(class="form-control-label")}}
-    {{form.code(class="form-control form-control-lg")}}
+    <form method="POST", action="/newbudget">
+      {{ form.hidden_tag() }}
+      {{form.code.label(class="form-control-label")}}
+      {{form.code(class="form-control form-control-lg")}}
 
-    {{form.project_name.label(class="form-control-label")}}
-    {{form.project_name(class="form-control form-control-lg")}}
+      {{form.project_name.label(class="form-control-label")}}
+      {{form.project_name(class="form-control form-control-lg")}}
 
-    {{form.initial_amount.label(class="form-control-label")}}
-    {{form.initial_amount(class="form-control form-control-lg")}}
+      {{form.initial_amount.label(class="form-control-label")}}
+      {{form.initial_amount(class="form-control form-control-lg")}}
 
 
-    {{form.amount_spent.label(class="form-control-label")}}
-    {{form.amount_spent(class="form-control form-control-lg")}}
+      {{form.amount_spent.label(class="form-control-label")}}
+      {{form.amount_spent(class="form-control form-control-lg")}}
 
-    <br>
-    {{form.submit(class="btn btn-outline-success form-control form-control-lg")}}
-  </form>
+      <br>
+      {{form.submit(class="btn btn-outline-success form-control form-control-lg")}}
+    </form>
+  </div>
+
+  <div class="col-md-6">
+
+    <h1 class="text-center">Existing Budgets</h1>
+
+    <table class="table table-secondary table-bordered">
+      <thead>
+        <tr>
+          <!-- <th scope="row"></th> -->
+          <th scope="col">Budget Codes</th>
+          <th scope="col">Project Codes (if applicable)</th>
+          <th scope="col">Initial Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+    {% for i in bb %}
+
+          <tr>
+
+            <td>{{i.code}}</td>
+            <td>{{i.project_name}}</td>
+            <td>{{i.initial_amount}}</td>
+
+          </tr>
+
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
 </div>
 
-<div>
-  {% for i in bb %}
-  {{i.code}},
-  {% endfor %}
-</div>
+
 
 
 {% endblock %}
