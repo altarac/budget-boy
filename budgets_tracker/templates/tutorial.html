@@ -1,11 +1,46 @@
 {% extends 'base_in.html' %}
 
 {% block body %}
-
-<div class="embed-responsive embed-responsive-16by9">
-  <iframe class="embed-responsive-item" width="560" height="315" src="https://www.youtube.com/embed/X_tYrnv_o6A" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-</div>
 <br>
-<a href="/profile/{{u}}" class="btn btn-danger btn-block">Back</a>
+
+
+<div class="row">
+  <div class="col-md-2">
+    <ul class="nav flex-column">
+  <li class="nav-item">
+    <a href="/profile/{{u}}" class="nav-link">Go back</a>
+
+  </li>
+
+</ul>
+
+</div>
+{% if session['key'][0]==False %}
+
+<div class="col-md-6 offset-2">
+  <div class="embed-responsive embed-responsive-16by9">
+
+    <iframe  class="embed-responsive-item" width="560" height="315" src="https://www.youtube.com/embed/sgWHwyjCBos" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  </div>
+</div>
+
+{% endif %}
+
+
+
+
+{% if session['key'][0]==True %}
+
+<div class="col-md-6 offset-2">
+  <div class="embed-responsive embed-responsive-16by9">
+
+    <iframe class="embed-responsive-item" width="560" height="315" src="https://www.youtube.com/embed/8ncRVu_SVEM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  </div>
+</div>
+
+{% endif %}
+  </div>
+
+
 
 {% endblock %}

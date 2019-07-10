@@ -1,17 +1,60 @@
 {% extends 'base_in.html' %}
 
 {% block body %}
-
-<div class="alert alert-success" role="alert">
-  {{u}}'s profile {{p}}
+<br>
+<div class="alert alert-success text-center" role="alert">
+  Viewing {{u}}'s profile {{p}}
 </div>
 
 <div class="row">
-    <div class="col-md-6">
+
+  <div id="navbar-example2" class="col-md-2">
+    <ul class="nav flex-column">
+      <!-- <li class="nav-item">
+
+        <a href="/profile/{{u}}/update" class="nav-link"><span class="badge badge-pill badge-success"><img style="width:10px; height:10px" src='/static/sun.svg'></img> New event</span></a>
+
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#"><span class="badge badge-pill badge-warning"><img style="width:10px; height:10px" src='/static/edit.svg'></img> Edit an event</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#"><span class="badge badge-pill badge-danger"><img style="width:10px; height:10px" src='/static/delete.svg'></img> Delete an event</span></a>
+      </li> -->
+      <li class="nav-item">
+        <a class="nav-link" href="/master"><span class="badge badge-pill badge-danger"><img style="width:10px; height:10px" src='/static/left-arrow.svg'></img> Back</a>
+
+      </li>
+
+      <li class="nav-item">
+        <a onclick="printJS({ printable: 'releaseForms-1', type: 'html', css:'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css'})" class="nav-link" href="#"><span class="badge badge-pill badge-secondary"><img style="width:10px; height:10px" src='/static/save-file-option.svg'></img> Save all as PDF</span></a>
+
+      </li>
+      <li class="nav-item">
+        <a href="/print/{{u}}" class="nav-link"><span class="badge badge-pill badge-dark"><img style="width:10px; height:10px" src='/static/checked.svg'></img> Mark events as processed</span></a>
+
+      </li>
+
+      <li class="nav-item">
+        <a href="#archived" class="nav-link" data-toggle="collapse" data-target="#multiCollapseExample2" aria-expanded="false" aria-controls="multiCollapseExample2"><span class="badge badge-pill badge-info"><img style="width:10px; height:10px" src='/static/binoculars.svg'></img> See archived</span></a>
+
+      </li>
+
+
+
+      <!-- <a class="btn btn-warning btn-block" type="button" data-toggle="collapse" data-target="#multiCollapseExample2" aria-expanded="false" aria-controls="multiCollapseExample2">Archived</a> -->
+
+      <!-- <a href="/print/{{u}}" class="nav-link">Mark events as processed</a> -->
+        <!-- <a class="btn btn-danger btn-block col-md-4 offset-4" onclick="printJS({ printable: 'releaseForms-1', type: 'html', css:'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css'})"> Save all as PDF <img style="width:10px; height:10px" src='/static/printer-.svg'></img> </a> -->
+
+    </ul>
+  </div>
+
+
+    <div class="col-md-5">
       <table class="table table-dark">
         <thead>
           <tr>
-            <th scope="col"><a class="btn btn-sm btn-warning" href="#" data-toggle="modal" data-target="#new">New</a></th>
             <th scope="col">Budget Code</th>
             <th scope="col">Initial Amount</th>
             <th scope="col">Total Spent</th>
@@ -24,7 +67,6 @@
           {% for line in b %}
           {% set balance = (line.initial_amount - line.amount_spent) %}
             <tr>
-              <th scope="row"><a href="#" class="badge badge-danger" data-toggle="modal" data-target="#del{{line.id}}">x</a> <a href="#" class="badge badge-info {{line.id}}" data-toggle="modal" data-target="#info{{line.id}}">i</a> </th>
               <td>{{line.code}}</td>
               <td>{{line.initial_amount}}</td>
               <td>{{line.amount_spent}}</td>
@@ -34,9 +76,9 @@
           {% endfor %}
         </tbody>
       </table>
-      <a class="btn btn-warning btn-block" href="/master" >Back</a>
+
     </div>
-    <div id="p" class="col-md-6">
+    <div id="p" class="col-md-5">
       <table class="table table-secondary">
         <thead>
           <tr>
@@ -70,16 +112,16 @@
 <hr>
 
 
-  <a class="btn btn-danger btn-block col-md-4 offset-4" onclick="printJS({ printable: 'releaseForms-1', type: 'html', css:'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css'})"> Save all as PDF <img style="width:10px; height:10px" src='/static/printer-.svg'></img> </a>
+  <!-- <a class="btn btn-danger btn-block col-md-4 offset-4" onclick="printJS({ printable: 'releaseForms-1', type: 'html', css:'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css'})"> Save all as PDF <img style="width:10px; height:10px" src='/static/printer-.svg'></img> </a> -->
 
-  <a href="/print/{{u}}" class="btn btn-primary btn-block col-md-4 offset-4"> Refresh</a>
+  <!-- <a href="/print/{{u}}" class="btn btn-primary btn-block col-md-4 offset-4"> Refresh</a> -->
 
 
 {% for e in events2 %}
 
 {% for g in e.guests_present.split(',') %}
 
-<div id="releaseForms-1">
+<div class="border border-secondary" id="releaseForms-1">
 
 
     <div class="row">
@@ -107,7 +149,7 @@
   </div>
 
   <div style="margin-top: 150px;"  class="row">
-    <div class="col-md-12">
+    <div class="col-md-10 offset-1">
       <table class="table table-secondary table-bordered">
         <thead>
           <tr>
@@ -126,8 +168,8 @@
             <tr>
 
               <td class="text-center">{{g}}</td>
-              <td class="text-center">school name goes here</td>
-              <td class="text-center">name of workshop goes here</td>
+              <td class="text-center">{{e.school.split(',')[loop.index-1]}}</td>
+              <td class="text-center">{{e.workshop_name}}</td>
               <td class="text-center">{{(e.date_of_event|string)[:-8]}}</td>
               <td class="text-center">{{e.budget_code}}</td>
               <td class="text-center">{{e.project_name}}</td>
@@ -168,7 +210,7 @@
 
 
 <div class="row">
-  <img style="margin-top: 320px;"  class="img-fluid mx-auto d-block" src="/static/foot.png">
+  <img width="90%" style="margin-top: 320px;"  class="img-fluid mx-auto d-block" src="/static/foot.png">
 </div>
 
 
@@ -203,12 +245,12 @@
 
 <!-- /fjdbkewjhvfjherfvkjerfkuj -->
 
+<!--
+<button class="btn btn-warning btn-block" type="button" data-toggle="collapse" data-target="#multiCollapseExample2" aria-expanded="false" aria-controls="multiCollapseExample2">Archived</button> -->
 
-<button class="btn btn-warning btn-block" type="button" data-toggle="collapse" data-target="#multiCollapseExample2" aria-expanded="false" aria-controls="multiCollapseExample2">Archived</button>
-
-<div class="col">
+<div data-spy="scroll" data-target="#navbar-example2" class="col">
    <div class="collapse multi-collapse" id="multiCollapseExample2">
-     <div class="card card-body">
+     <div id="archived" class="card card-body">
 
        {% for e in events %}
 

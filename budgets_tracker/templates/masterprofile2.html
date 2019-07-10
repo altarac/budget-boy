@@ -6,125 +6,161 @@
   Budget code: {{bc}}
 </div>
 
-<a class="btn btn-danger btn-block col-md-4 offset-4" onclick="printJS({ printable: 'releaseForms-1', type: 'html', css:'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css'})"> Save all as PDF <img style="width:10px; height:10px" src='/static/printer-.svg'></img> </a>
 
 
-{% for e in events %}
+<div class="row">
+  <div id="navbar-example2" class="col-md-2">
+    <ul class="nav flex-column">
 
-{% for g in e.guests_present.split(',') %}
+      <li class="nav-item">
+        <a class="nav-link" href="/master"><span class="badge badge-pill badge-danger"><img style="width:10px; height:10px" src='/static/left-arrow.svg'></img> Back</a>
 
-<div id="releaseForms-1">
+      </li>
+
+      <li class="nav-item">
+        <a onclick="printJS({ printable: 'releaseForms-1', type: 'html', css:'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css'})" class="nav-link" href="#"><span class="badge badge-pill badge-secondary"><img style="width:10px; height:10px" src='/static/save-file-option.svg'></img> Save all as PDF</span></a>
+
+      </li>
+      <li class="nav-item">
+        <a href="/print/{{u}}" class="nav-link disabled"><span class="badge badge-pill badge-dark"><img style="width:10px; height:10px" src='/static/checked.svg' ></img> Mark events as processed</span></a>
+
+      </li>
+
+      <li class="nav-item">
+        <a href="#archived" class="nav-link" data-toggle="collapse" data-target="#multiCollapseExample2" aria-expanded="false" aria-controls="multiCollapseExample2"><span class="badge badge-pill badge-info"><img style="width:10px; height:10px" src='/static/binoculars.svg'></img> See archived</span></a>
+
+      </li>
+
+
+
+      <!-- <a class="btn btn-warning btn-block" type="button" data-toggle="collapse" data-target="#multiCollapseExample2" aria-expanded="false" aria-controls="multiCollapseExample2">Archived</a> -->
+
+      <!-- <a href="/print/{{u}}" class="nav-link">Mark events as processed</a> -->
+        <!-- <a class="btn btn-danger btn-block col-md-4 offset-4" onclick="printJS({ printable: 'releaseForms-1', type: 'html', css:'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css'})"> Save all as PDF <img style="width:10px; height:10px" src='/static/printer-.svg'></img> </a> -->
+
+    </ul>
+  </div>
+
+  <div class="col-md-10">
+    <!-- <a class="btn btn-danger btn-block col-md-4 offset-4" onclick="printJS({ printable: 'releaseForms-1', type: 'html', css:'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css'})"> Save all as PDF <img style="width:10px; height:10px" src='/static/printer-.svg'></img> </a> -->
+
+
+    {% for e in events %}
+
+    {% for g in e.guests_present.split(',') %}
+
+    <div id="releaseForms-1" class="border border-secondary">
+
+
+        <div class="row">
+          <img class="img-fluid mx-auto d-block" src="/static/swlsb.jpg">
+        </div>
+
+
+
+      <div class="row">
+        <div class="col-md-12 text-center">
+          <h4>PEDAGOGICAL SERVICES DEPT (PSD)</h4>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 text-center">
+          <h5>Teacher Release Time Authorization</h5>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 text-center">
+          <p>
+            I, Geoffrey Hipps, Director of the Pedagogical Services Department hereby authorize:
+          </p>
+        </div>
+      </div>
+
+      <div style="margin-top: 150px;"  class="row">
+        <div class="col-md-10 offset-1">
+          <table class="table table-secondary table-bordered">
+            <thead>
+              <tr>
+                <!-- <th scope="row"></th> -->
+                <th class="text-center" scope="col">Name of Teacher</th>
+                <th class="text-center" scope="col">School</th>
+                <th class="text-center" scope="col">Name of Workshop</th>
+                <th class="text-center" scope="col">Date of Release</th>
+                <th class="text-center" scope="col">Workshop Budget Code</th>
+                <th class="text-center" scope="col">Project Code (if applicable)</th>
+              </tr>
+            </thead>
+            <tbody>
+
+
+                <tr>
+
+                  <td class="text-center">{{g}}</td>
+                  <td class="text-center">{{e.school.split(',')[loop.index-1]}}</td>
+                  <td class="text-center">{{e.workshop_name}}</td>
+                  <td class="text-center">{{(e.date_of_event|string)[:-8]}}</td>
+                  <td class="text-center">{{e.budget_code}}</td>
+                  <td class="text-center">{{e.project_name}}</td>
+
+                </tr>
+            </tbody>
+          </table>
+
+        </div>
+      </div>
 
 
     <div class="row">
-      <img class="img-fluid mx-auto d-block" src="/static/swlsb.jpg">
+      <div class="col-md-12 text-center">
+        <p>
+    <h5>KINDLY TAKE NOTE THAT ALL SIGNED PSD RELEASES ARE TO BE SUBMITTED IN ATTCHMENT TO YOUR TIMESHEET(S) & (BILL 90) ABSENT FORMS(S).</h5>
+    </p>
+    </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12 text-center">
+        <p>
+    <h5>PAYROLL WILL NOT PROCESS YOUR (RESPECTIVE SCHOOL) RELEASE(S) WITHOUT THIS FORM.</h5>
+    </p>
+    </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12 text-center">
+        <p>
+    <h5>signature goes here...</h5>
+    </p>
+    </div>
+
     </div>
 
 
 
-  <div class="row">
-    <div class="col-md-12 text-center">
-      <h4>PEDAGOGICAL SERVICES DEPT (PSD)</h4>
+    <div class="row">
+      <img width="90%" style="margin-top: 320px;"  class="img-fluid mx-auto d-block" src="/static/foot.png">
     </div>
-  </div>
-  <div class="row">
-    <div class="col-md-12 text-center">
-      <h5>Teacher Release Time Authorization</h5>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-12 text-center">
-      <p>
-        I, Geoffrey Hipps, Director of the Pedagogical Services Department hereby authorize:
-      </p>
-    </div>
-  </div>
-
-  <div style="margin-top: 150px;"  class="row">
-    <div class="col-md-12">
-      <table class="table table-secondary table-bordered">
-        <thead>
-          <tr>
-            <!-- <th scope="row"></th> -->
-            <th class="text-center" scope="col">Name of Teacher</th>
-            <th class="text-center" scope="col">School</th>
-            <th class="text-center" scope="col">Name of Workshop</th>
-            <th class="text-center" scope="col">Date of Release</th>
-            <th class="text-center" scope="col">Workshop Budget Code</th>
-            <th class="text-center" scope="col">Project Code (if applicable)</th>
-          </tr>
-        </thead>
-        <tbody>
 
 
-            <tr>
 
-              <td class="text-center">{{g}}</td>
-              <td class="text-center">school name goes here</td>
-              <td class="text-center">name of workshop goes here</td>
-              <td class="text-center">{{(e.date_of_event|string)[:-8]}}</td>
-              <td class="text-center">{{e.budget_code}}</td>
-              <td class="text-center">{{e.project_name}}</td>
 
-            </tr>
-        </tbody>
-      </table>
+    <hr style = 'page-break-after: always;'>
+
+
+    {% endfor %}
+
+    {% endfor %}
+
 
     </div>
-  </div>
 
 
-<div class="row">
-  <div class="col-md-12 text-center">
-    <p>
-<h5>KINDLY TAKE NOTE THAT ALL SIGNED PSD RELEASES ARE TO BE SUBMITTED IN ATTCHMENT TO YOUR TIMESHEET(S) & (BILL 90) ABSENT FORMS(S).</h5>
-</p>
-</div>
-</div>
-
-<div class="row">
-  <div class="col-md-12 text-center">
-    <p>
-<h5>PAYROLL WILL NOT PROCESS YOUR (RESPECTIVE SCHOOL) RELEASE(S) WITHOUT THIS FORM.</h5>
-</p>
-</div>
-</div>
-
-<div class="row">
-  <div class="col-md-12 text-center">
-    <p>
-<h5>signature goes here...</h5>
-</p>
-</div>
-
-</div>
+    <!--
+      <a href="/print/{{u}}" class="btn btn-primary btn-block col-md-4 offset-4"> Refresh</a>
+     -->
 
 
-
-<div class="row">
-  <img style="margin-top: 320px;"  class="img-fluid mx-auto d-block" src="/static/foot.png">
-</div>
-
-
-
-
-<hr style = 'page-break-after: always;'>
-
-
-{% endfor %}
-
-{% endfor %}
-
-
-</div>
-
-
-<!--
-  <a href="/print/{{u}}" class="btn btn-primary btn-block col-md-4 offset-4"> Refresh</a>
- -->
-
-
-<br>
+    <br>
 
 
 
@@ -140,306 +176,309 @@
 
 
 
-<!-- /fjdbkewjhvfjherfvkjerfkuj -->
+    <!-- /fjdbkewjhvfjherfvkjerfkuj -->
 
 
-<button class="btn btn-warning btn-block" type="button" data-toggle="collapse" data-target="#multiCollapseExample2" aria-expanded="false" aria-controls="multiCollapseExample2">Archived</button>
+    <!-- <button class="btn btn-warning btn-block" type="button" data-toggle="collapse" data-target="#multiCollapseExample2" aria-expanded="false" aria-controls="multiCollapseExample2">Archived</button> -->
 
-<div class="col">
-   <div class="collapse multi-collapse" id="multiCollapseExample2">
-     <div class="card card-body">
+    <div class="col">
+       <div class="collapse multi-collapse" id="multiCollapseExample2">
+         <div class="card card-body">
 
-       {% for e in events %}
+           {% for e in events %}
 
-       {% for g in e.guests_present.split(',') %}
+           {% for g in e.guests_present.split(',') %}
 
-       <div id="releaseForms">
+           <div id="releaseForms">
+
+
+               <div class="row">
+                 <img class="img-fluid mx-auto d-block" src="/static/swlsb.jpg">
+               </div>
+
+
+
+             <div class="row">
+               <div class="col-md-12 text-center">
+                 <h4>PEDAGOGICAL SERVICES DEPT (PSD)</h4>
+               </div>
+             </div>
+             <div class="row">
+               <div class="col-md-12 text-center">
+                 <h5>Teacher Release Time Authorization</h5>
+               </div>
+             </div>
+             <div class="row">
+               <div class="col-md-12 text-center">
+                 <p>
+                   I, Geoffrey Hipps, Director of the Pedagogical Services Department hereby authorize:
+                 </p>
+               </div>
+             </div>
+
+             <div class="row">
+               <div class="col-md-12">
+                 <table class="table table-secondary table-bordered">
+                   <thead>
+                     <tr>
+                       <!-- <th scope="row"></th> -->
+                       <th scope="col">Name of Teacher</th>
+                       <th scope="col">School</th>
+                       <th scope="col">Name of Workshop</th>
+                       <th scope="col">Date of Release</th>
+                       <th scope="col">Workshop Budget Code</th>
+                       <th scope="col">Project Code (if applicable)</th>
+                     </tr>
+                   </thead>
+                   <tbody>
+
+
+                       <tr>
+
+                         <td>{{g}}</td>
+                         <td>school name here</td>
+                         <td>name of workshop name here</td>
+                         <td>{{(e.date_of_event|string)[:-8]}}</td>
+                         <td>{{e.budget_code}}</td>
+                         <td>N/A</td>
+
+                       </tr>
+                   </tbody>
+                 </table>
+
+               </div>
+             </div>
 
 
            <div class="row">
-             <img class="img-fluid mx-auto d-block" src="/static/swlsb.jpg">
+             <div class="col-md-12 text-center">
+               <p>
+           <h5>KINDLY TAKE NOTE THAT ALL SIGNED PSD RELEASES ARE TO BE SUBMITTED IN ATTCHMENT TO YOUR TIMESHEET(S) & (BILL 90) ABSENT FORMS(S).</h5>
+           </p>
+           </div>
+           </div>
+
+           <div class="row">
+             <div class="col-md-12 text-center">
+               <p>
+           <h5>PAYROLL WILL NOT PROCESS YOUR (RESPECTIVE SCHOOL) RELEASE(S) WITHOUT THIS FORM.</h5>
+           </p>
+           </div>
+           </div>
+
+           <div class="row">
+             <div class="col-md-12 text-center">
+               <p>
+           <h5>signature goes here...</h5>
+           </p>
+           </div>
+
+           </div>
+
+           <div class="row">
+             <img class="img-fluid mx-auto d-block" src="/static/foot.png">
            </div>
 
 
 
-         <div class="row">
-           <div class="col-md-12 text-center">
-             <h4>PEDAGOGICAL SERVICES DEPT (PSD)</h4>
-           </div>
+
+           <hr>
+
+           {% endfor %}
+
+           {% endfor %}
+
+
+
          </div>
-         <div class="row">
-           <div class="col-md-12 text-center">
-             <h5>Teacher Release Time Authorization</h5>
-           </div>
-         </div>
-         <div class="row">
-           <div class="col-md-12 text-center">
-             <p>
-               I, Geoffrey Hipps, Director of the Pedagogical Services Department hereby authorize:
-             </p>
-           </div>
-         </div>
-
-         <div class="row">
-           <div class="col-md-12">
-             <table class="table table-secondary table-bordered">
-               <thead>
-                 <tr>
-                   <!-- <th scope="row"></th> -->
-                   <th scope="col">Name of Teacher</th>
-                   <th scope="col">School</th>
-                   <th scope="col">Name of Workshop</th>
-                   <th scope="col">Date of Release</th>
-                   <th scope="col">Workshop Budget Code</th>
-                   <th scope="col">Project Code (if applicable)</th>
-                 </tr>
-               </thead>
-               <tbody>
-
-
-                   <tr>
-
-                     <td>{{g}}</td>
-                     <td>school name here</td>
-                     <td>name of workshop name here</td>
-                     <td>{{(e.date_of_event|string)[:-8]}}</td>
-                     <td>{{e.budget_code}}</td>
-                     <td>N/A</td>
-
-                   </tr>
-               </tbody>
-             </table>
-
-           </div>
-         </div>
-
-
-       <div class="row">
-         <div class="col-md-12 text-center">
-           <p>
-       <h5>KINDLY TAKE NOTE THAT ALL SIGNED PSD RELEASES ARE TO BE SUBMITTED IN ATTCHMENT TO YOUR TIMESHEET(S) & (BILL 90) ABSENT FORMS(S).</h5>
-       </p>
        </div>
-       </div>
-
-       <div class="row">
-         <div class="col-md-12 text-center">
-           <p>
-       <h5>PAYROLL WILL NOT PROCESS YOUR (RESPECTIVE SCHOOL) RELEASE(S) WITHOUT THIS FORM.</h5>
-       </p>
-       </div>
-       </div>
-
-       <div class="row">
-         <div class="col-md-12 text-center">
-           <p>
-       <h5>signature goes here...</h5>
-       </p>
-       </div>
-
-       </div>
-
-       <div class="row">
-         <img class="img-fluid mx-auto d-block" src="/static/foot.png">
-       </div>
-
-
-
-
-       <hr>
-
-       {% endfor %}
-
-       {% endfor %}
-
-
-
      </div>
-   </div>
- </div>
 
 
 
 
 
 
-<!-- <div id="accordion">
-  <div class="card">
-    <div class="card-header" id="headingOne">
-      <h5 class="mb-0">
-        <button class="btn btn-link btn-block" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-          Mmmmm.... doughnuts...
-        </button>
-      </h5>
-    </div>
-
-    <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
-      <div class="card-body">
-        <div class="row">
-        {% for i in b %}
-          <div onload="script();" class="charts col-md-4">
-            {{i.code}}
-            <canvas id="myChart{{i.code}}" width="400" height="400"></canvas>
-          <script>
-          var ctx = document.getElementById('myChart{{i.code}}').getContext('2d');
-          var myChart = new Chart(ctx, {
-              type: 'doughnut',
-              data: {
-                  labels: ['amount spent', 'amount not spent'],
-                  datasets: [{
-                      label: 'budget spending',
-                      data: [{{i.amount_spent}}, {{i.initial_amount - i.amount_spent}}],
-                      backgroundColor: [
-                          'rgba(255, 99, 132, 0.2)',
-                          'rgba(54, 162, 235, 0.2)',
-                          // 'rgba(255, 206, 86, 0.2)',
-                          // 'rgba(75, 192, 192, 0.2)',
-                          // 'rgba(153, 102, 255, 0.2)',
-                          // 'rgba(255, 159, 64, 0.2)'
-                      ],
-                      borderColor: [
-                          'rgba(255, 99, 132, 1)',
-                          'rgba(54, 162, 235, 1)',
-                          // 'rgba(255, 206, 86, 1)',
-                          // 'rgba(75, 192, 192, 1)',
-                          // 'rgba(153, 102, 255, 1)',
-                          // 'rgba(255, 159, 64, 1)'
-                      ],
-                      borderWidth: 1
-                  }]
-              }
-          });
-          </script>
-
-          </div>
-        {% endfor %}
+    <!-- <div id="accordion">
+      <div class="card">
+        <div class="card-header" id="headingOne">
+          <h5 class="mb-0">
+            <button class="btn btn-link btn-block" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+              Mmmmm.... doughnuts...
+            </button>
+          </h5>
         </div>
-      </div>
-    </div>
-  </div>
-  <div class="card">
-    <div class="card-header" id="headingTwo">
-      <h5 class="mb-0">
-        <button class="btn btn-link collapsed btn-block" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-          Broken line graphs
-        </button>
-      </h5>
-    </div>
-    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
-      <div class="card-body">
-        <div class="row">
 
-          <div onload="script();" class="charts col-md-8 offset-2">
-
-            <canvas id="myChartline" width="400" height="400"></canvas>
-          <script>
-          var ctx = document.getElementById('myChartline').getContext('2d');
-          var myChart = new Chart(ctx, {
-              type: 'line',
-              data: {
-                  labels: [{% for x in events %} '{{x.date_of_event}}', {% endfor %}],
-                  datasets: [{
-                      label: 'spending over time',
-                      data: [{% for x in events %} {{x.amount_spent_on_release}}, {% endfor %}],
-                      backgroundColor: [
-                          'rgba(255, 99, 132, 0.2)',
-                          'rgba(54, 162, 235, 0.2)',
-                          // 'rgba(255, 206, 86, 0.2)',
-                          // 'rgba(75, 192, 192, 0.2)',
-                          // 'rgba(153, 102, 255, 0.2)',
-                          // 'rgba(255, 159, 64, 0.2)'
-                      ],
-                      borderColor: [
-                          'rgba(255, 99, 132, 1)',
-                          'rgba(54, 162, 235, 1)',
-                          // 'rgba(255, 206, 86, 1)',
-                          // 'rgba(75, 192, 192, 1)',
-                          // 'rgba(153, 102, 255, 1)',
-                          // 'rgba(255, 159, 64, 1)'
-                      ],
-                      borderWidth: 1
-                  }]
-              },
-              options: {
-                  scales: {
-                      yAxes: [{
-                          ticks: {
-                              beginAtZero: true
-                          }
+        <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+          <div class="card-body">
+            <div class="row">
+            {% for i in b %}
+              <div onload="script();" class="charts col-md-4">
+                {{i.code}}
+                <canvas id="myChart{{i.code}}" width="400" height="400"></canvas>
+              <script>
+              var ctx = document.getElementById('myChart{{i.code}}').getContext('2d');
+              var myChart = new Chart(ctx, {
+                  type: 'doughnut',
+                  data: {
+                      labels: ['amount spent', 'amount not spent'],
+                      datasets: [{
+                          label: 'budget spending',
+                          data: [{{i.amount_spent}}, {{i.initial_amount - i.amount_spent}}],
+                          backgroundColor: [
+                              'rgba(255, 99, 132, 0.2)',
+                              'rgba(54, 162, 235, 0.2)',
+                              // 'rgba(255, 206, 86, 0.2)',
+                              // 'rgba(75, 192, 192, 0.2)',
+                              // 'rgba(153, 102, 255, 0.2)',
+                              // 'rgba(255, 159, 64, 0.2)'
+                          ],
+                          borderColor: [
+                              'rgba(255, 99, 132, 1)',
+                              'rgba(54, 162, 235, 1)',
+                              // 'rgba(255, 206, 86, 1)',
+                              // 'rgba(75, 192, 192, 1)',
+                              // 'rgba(153, 102, 255, 1)',
+                              // 'rgba(255, 159, 64, 1)'
+                          ],
+                          borderWidth: 1
                       }]
                   }
-              }
-          });
-          </script>
+              });
+              </script>
 
+              </div>
+            {% endfor %}
+            </div>
           </div>
-
         </div>
       </div>
-    </div>
-  </div>
-  <div class="card">
-    <div class="card-header" id="headingThree">
-      <h5 class="mb-0">
-        <button class="btn btn-link collapsed btn-block" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-          Bar charts!
-        </button>
-      </h5>
-    </div>
-    <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
-      <div class="card-body">
-        <div class="col-md-8 offset-2">
+      <div class="card">
+        <div class="card-header" id="headingTwo">
+          <h5 class="mb-0">
+            <button class="btn btn-link collapsed btn-block" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+              Broken line graphs
+            </button>
+          </h5>
+        </div>
+        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+          <div class="card-body">
+            <div class="row">
 
-          <canvas id="myChartbar" width="400" height="400"></canvas>
-  <script>
-  var ctx = document.getElementById('myChartbar').getContext('2d');
-  var myChart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-          labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-          datasets: [{
-              label: '# of Votes',
-              data: [12, 19, 3, 5, 2, 3],
-              backgroundColor: [
-                  'rgba(255, 99, 132, 0.2)',
-                  'rgba(54, 162, 235, 0.2)',
-                  'rgba(255, 206, 86, 0.2)',
-                  'rgba(75, 192, 192, 0.2)',
-                  'rgba(153, 102, 255, 0.2)',
-                  'rgba(255, 159, 64, 0.2)'
-              ],
-              borderColor: [
-                  'rgba(255, 99, 132, 1)',
-                  'rgba(54, 162, 235, 1)',
-                  'rgba(255, 206, 86, 1)',
-                  'rgba(75, 192, 192, 1)',
-                  'rgba(153, 102, 255, 1)',
-                  'rgba(255, 159, 64, 1)'
-              ],
-              borderWidth: 1
-          }]
-      },
-      options: {
-          scales: {
-              yAxes: [{
-                  ticks: {
-                      beginAtZero: true
+              <div onload="script();" class="charts col-md-8 offset-2">
+
+                <canvas id="myChartline" width="400" height="400"></canvas>
+              <script>
+              var ctx = document.getElementById('myChartline').getContext('2d');
+              var myChart = new Chart(ctx, {
+                  type: 'line',
+                  data: {
+                      labels: [{% for x in events %} '{{x.date_of_event}}', {% endfor %}],
+                      datasets: [{
+                          label: 'spending over time',
+                          data: [{% for x in events %} {{x.amount_spent_on_release}}, {% endfor %}],
+                          backgroundColor: [
+                              'rgba(255, 99, 132, 0.2)',
+                              'rgba(54, 162, 235, 0.2)',
+                              // 'rgba(255, 206, 86, 0.2)',
+                              // 'rgba(75, 192, 192, 0.2)',
+                              // 'rgba(153, 102, 255, 0.2)',
+                              // 'rgba(255, 159, 64, 0.2)'
+                          ],
+                          borderColor: [
+                              'rgba(255, 99, 132, 1)',
+                              'rgba(54, 162, 235, 1)',
+                              // 'rgba(255, 206, 86, 1)',
+                              // 'rgba(75, 192, 192, 1)',
+                              // 'rgba(153, 102, 255, 1)',
+                              // 'rgba(255, 159, 64, 1)'
+                          ],
+                          borderWidth: 1
+                      }]
+                  },
+                  options: {
+                      scales: {
+                          yAxes: [{
+                              ticks: {
+                                  beginAtZero: true
+                              }
+                          }]
+                      }
                   }
-              }]
-          }
-      }
-  });
-  </script>
+              });
+              </script>
 
+              </div>
+
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
-</div> -->
+      <div class="card">
+        <div class="card-header" id="headingThree">
+          <h5 class="mb-0">
+            <button class="btn btn-link collapsed btn-block" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+              Bar charts!
+            </button>
+          </h5>
+        </div>
+        <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+          <div class="card-body">
+            <div class="col-md-8 offset-2">
 
-<br>
-<br>
-<br>
+              <canvas id="myChartbar" width="400" height="400"></canvas>
+      <script>
+      var ctx = document.getElementById('myChartbar').getContext('2d');
+      var myChart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+              labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+              datasets: [{
+                  label: '# of Votes',
+                  data: [12, 19, 3, 5, 2, 3],
+                  backgroundColor: [
+                      'rgba(255, 99, 132, 0.2)',
+                      'rgba(54, 162, 235, 0.2)',
+                      'rgba(255, 206, 86, 0.2)',
+                      'rgba(75, 192, 192, 0.2)',
+                      'rgba(153, 102, 255, 0.2)',
+                      'rgba(255, 159, 64, 0.2)'
+                  ],
+                  borderColor: [
+                      'rgba(255, 99, 132, 1)',
+                      'rgba(54, 162, 235, 1)',
+                      'rgba(255, 206, 86, 1)',
+                      'rgba(75, 192, 192, 1)',
+                      'rgba(153, 102, 255, 1)',
+                      'rgba(255, 159, 64, 1)'
+                  ],
+                  borderWidth: 1
+              }]
+          },
+          options: {
+              scales: {
+                  yAxes: [{
+                      ticks: {
+                          beginAtZero: true
+                      }
+                  }]
+              }
+          }
+      });
+      </script>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div> -->
+
+    <br>
+    <br>
+    <br>
+  </div>
+
+</div>
 
 
 

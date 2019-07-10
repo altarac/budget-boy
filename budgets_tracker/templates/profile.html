@@ -2,39 +2,138 @@
 
 {% block body %}
 
-<div class="alert alert-primary" role="alert">
+<!-- <div class="alert alert-primary" role="alert">
   Hello {{u}}
-</div>
+</div> -->
 
-{% if session['key']==True %}
-
-
-
-  <div class="col-md-8 offset-2">
-    <button class="btn btn-primary btn-block" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-      Tutorial Video
-    </button>
-  </div>
-
-<div class="collapse" id="collapseExample">
-  <div class="card card-body">
-    <div class="col-md-8 offset-2">
-      <div class="embed-responsive embed-responsive-16by9">
-        <iframe class="embed-responsive-item" width="560" height="315" src="https://www.youtube.com/embed/X_tYrnv_o6A" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-{% endif %}
 
 <br>
 
 
 <div class="row">
-  <div class="col-md-6">
-    <h3 class="text-center">
+
+
+  <div class="col-md-2">
+    <ul class="nav flex-column">
+      <li class="nav-item">
+
+        {% if session['key'][0]==True %}
+
+        <li class="nav-item">
+          <a class="nav-link" href="/master"><span class="badge badge-pill badge-success"> Overview</span></a>
+          <!-- <a href="/profile/{{u}}/update" class="nav-link"></a> -->
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/newbudget"><span class="badge badge-pill badge-warning"> Create budgets</span></a>
+          <!-- <a class="nav-link disabled" href="/profile/{{u}}/edit"></a> -->
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/newuser"><span class="badge badge-pill badge-primary"> Add users</span></a>
+
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/modifyuser"><span class="badge badge-pill badge-danger"> Modify permissions</span></a>
+
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/tutorial/{{u}}"><span class="badge badge-pill badge-info"><img style="width:10px; height:10px" src='/static/information.svg'></img> Tutorial</span></a>
+        </li>
+        {% endif %}
+
+
+        {% if session['key'][0]==False %}
+
+        <a href="/profile/{{u}}/update" class="nav-link"><span class="badge badge-pill badge-success"><img style="width:10px; height:10px" src='/static/sun.svg'></img> New event</span></a>
+        <!-- <a class="nav-link active" href="#">Active</a> -->
+      </li>
+      <li class="nav-item">
+        <a class="nav-link disabled" href="/profile/{{u}}/edit"><span class="badge badge-pill badge-warning"><img style="width:10px; height:10px" src='/static/edit.svg'></img> Edit an event</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/profile/{{u}}/delete"><span class="badge badge-pill badge-danger"><img style="width:10px; height:10px" src='/static/delete.svg'></img> Delete an event</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/tutorial/{{u}}"><span class="badge badge-pill badge-primary"><img style="width:10px; height:10px" src='/static/information.svg'></img> Tutorial</span></a>
+      </li>
+      {% endif %}
+
+    </ul>
+    {% if session['key'][0]==False %}
+    <br>
+    <div class="border">
+      <h4 class="text-center">At a glance</h4>
+      <!-- <div class="row"> -->
+
+        {% set colours = ['warning', 'danger', 'primary', 'success'] %}
+
+        {% for i in tables %}
+        {% set percent = (i.amount_spent/i.initial_amount)*100 %}
+        <div class="col-md-12">
+          {{i.code}}
+          <div class="progress">
+            <div class="progress-bar progress-bar-striped progress-bar-animated bg-{{colours[(loop.index-1)%4]}}" role="progressbar" style="width: {{percent}}%" aria-valuenow={{i.amount_spent|string}} aria-valuemin="0" aria-valuemax={{i.initial_amount|string}}>{{percent|round(2)}}%</div>
+          </div>
+        </div>
+        {% endfor %}
+        <br>
+    </div>
+    {% endif %}
+    <!-- </div> -->
+  </div>
+
+  {% if session['key'][0]==True %}
+  <div class="col-md-10">
+    <h3 class="text-center bg-warning">
+      All budgets:
+    </h3>
+    <table class="table table-dark">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Budget Code</th>
+          <th scope="col">Initial Amount</th>
+          <th scope="col">Spent</th>
+          <th scope="col">Balance</th>
+          <th scope="col">% used</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        {% for line in tables2 %}
+        {% if line %}
+
+        {% set balance = (line.initial_amount - line.amount_spent) %}
+
+          <tr>
+            <th scope="row">{{loop.index}}</th>
+            <td>{{line.code}}</td>
+            <td>{{line.initial_amount|int}}</td>
+            <td>{{line.amount_spent}}</td>
+            <td>{{balance}}</td>
+            <td>{{((1 - (balance/line.initial_amount)|round(2))*100)|int}} %</td>
+          </tr>
+
+        {% endif %}
+        {% endfor %}
+      </tbody>
+    </table>
+
+
+
+    </div>
+
+  {% endif %}
+
+
+
+
+
+
+
+
+{% if session['key'][0]==False %}
+  <div class="col-md-5">
+    <h3 class="text-center bg-warning">
       Your budgets:
     </h3>
     <table class="table table-dark">
@@ -68,60 +167,19 @@
         {% endfor %}
       </tbody>
     </table>
-    <a href="/profile/{{u}}/update" class="btn btn-warning btn-block">New event</a>
-    <br>
-    <h4 class="text-center">Your spending at a glance</h4>
-    <div class="row">
 
-    {% for i in tables %}
-      <div onload="script();" class="charts col-md-{{(12 / b_count)|int}}">
-        {{i.code}}
-        <canvas id="myChart{{i.code}}" width="400" height="400"></canvas>
-      <script>
-      var ctx = document.getElementById('myChart{{i.code}}').getContext('2d');
-      var myChart = new Chart(ctx, {
-          type: 'doughnut',
-          data: {
-              labels: ['Spent', 'Unspent'],
-              datasets: [{
-                  label: 'budget spending',
-                  data: [{{i.amount_spent}}, {{i.initial_amount - i.amount_spent}}],
-                  backgroundColor: [
-                      'rgba(255, 99, 132, 0.2)',
-                      'rgba(54, 162, 235, 0.2)',
-                      // 'rgba(255, 206, 86, 0.2)',
-                      // 'rgba(75, 192, 192, 0.2)',
-                      // 'rgba(153, 102, 255, 0.2)',
-                      // 'rgba(255, 159, 64, 0.2)'
-                  ],
-                  borderColor: [
-                      'rgba(255, 99, 132, 1)',
-                      'rgba(54, 162, 235, 1)',
-                      // 'rgba(255, 206, 86, 1)',
-                      // 'rgba(75, 192, 192, 1)',
-                      // 'rgba(153, 102, 255, 1)',
-                      // 'rgba(255, 159, 64, 1)'
-                  ],
-                  borderWidth: 1
-              }]
-          }
-      });
-      </script>
 
-      </div>
-    {% endfor %}
+
     </div>
 
-
-  </div>
-  <div class="col-md-6">
-    <h3 class="text-center">
-      Your expenses to date:
+  <div class="col-md-5">
+    <h3 class="text-center bg-warning">
+      Your events to date:
     </h3>
     <table class="table table-dark">
       <thead>
         <tr>
-          <th scope="col">#</th>
+          <th scope="col">id #</th>
           <th scope="col">Date of event</th>
           <th scope="col">Budget Code</th>
           <th scope="col">Cost of event</th>
@@ -133,13 +191,13 @@
         {% for e in events %}
 
           <tr>
-            <th scope="row">{{loop.index}}</th>
+            <th scope="row">{{e.id}}</th>
             <td>{{(e.date_of_event|string)[:-8]}}</td>
             <td>{{e.budget_code}}</td>
             <td>{{e.amount_spent_on_release}}</td>
             <td>
                 {% for x in e.guests_present.split(',') %}
-                  <a href="#" data-toggle="popover" title="More Info" data-content="School, Secretary, etc...">{{x}}</a>,
+                  <a class="text-white" href="#" data-toggle="popover" title="More Info" data-content="School, Secretary, etc...">{{x}}</a>,
                 {% endfor %}
             </td>
           </tr>
@@ -148,6 +206,7 @@
       </tbody>
     </table>
   </div>
+  {% endif %}
 
 </div>
 

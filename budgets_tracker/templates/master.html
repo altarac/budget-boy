@@ -3,7 +3,35 @@
 {% block body %}
 <br>
 <div class="row">
-  <div class="col-md-6">
+
+  <div class="col-md-2">
+    <ul class="nav flex-column">
+      <li class="nav-item">
+
+        {% if session['key'][0]==True %}
+
+        <li class="nav-item">
+          <a class="nav-link" href="/master"><span class="badge badge-pill badge-success"> Overview</span></a>
+          <!-- <a href="/profile/{{u}}/update" class="nav-link"></a> -->
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/newbudget"><span class="badge badge-pill badge-warning"> Create budgets</span></a>
+          <!-- <a class="nav-link disabled" href="/profile/{{u}}/edit"></a> -->
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/newuser"><span class="badge badge-pill badge-primary"> Add users</span></a>
+
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/modifyuser"><span class="badge badge-pill badge-danger"> Modify permissions</span></a>
+
+        </li>
+        {% endif %}
+
+    </div>
+
+
+  <div class="col-md-5">
 
       <h4>
         Select a person to view their budgets
@@ -22,7 +50,7 @@
     </div>
   </div>
 
-  <div class="col-md-6">
+  <div class="col-md-5">
     <h4>
       Select a budget code to view all activity
     </h4>

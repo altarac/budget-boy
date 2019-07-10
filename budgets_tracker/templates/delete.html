@@ -1,0 +1,100 @@
+{% extends 'base_in.html' %}
+
+
+
+
+{% block body %}
+<script type="text/javascript">
+    alert('You should check with Elisabeth first before deleting an event...');
+</script>
+<!-- <div class="alert alert-primary" role="alert">
+  Hello {{u}}
+</div> -->
+<br>
+
+<div class="row">
+
+  <div class="col-md-2">
+    <ul class="nav flex-column">
+  <li class="nav-item">
+
+    <a href="/profile/{{u}}" class="nav-link"><span class="badge badge-pill badge-danger">Back</span></a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="/tutorial/{{u}}"><span class="badge badge-pill badge-primary">Tutorial</span></a>
+  </li>
+
+</ul>
+  </div>
+
+  <div class="col-md-5">
+    <h3 class="text-center bg-danger">
+      Delete an event:
+    </h3>
+
+    <form method="POST", action="/profile/{{u}}/delete">
+      {{ form.hidden_tag() }}
+
+      <div class="row">
+
+        <div class="col-md-6">
+          <h4>Delete  row with Id #</h4>
+        </div>
+        <div class="col-md-2">
+          {{form.id(class="form-control form-control-lg")}}
+        </div>
+
+        <div class="col-md-4">
+          {{form.submit(class="btn btn-danger form-control form-control-lg")}}
+        </div>
+
+      </div>
+    </form>
+
+
+  </div>
+
+
+  <div class="col-md-5">
+    <h3 class="text-center bg-warning">
+      Your events to date:
+    </h3>
+    <table class="table table-dark">
+      <thead>
+        <tr>
+          <th scope="col">id #</th>
+          <th scope="col">Date of event</th>
+          <th scope="col">Budget Code</th>
+          <th scope="col">Cost of event</th>
+          <th scope="col">Participants</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        {% for e in ee %}
+
+          <tr>
+            <th scope="row">{{e.id}}</th>
+            <td>{{(e.date_of_event|string)[:-8]}}</td>
+            <td>{{e.budget_code}}</td>
+            <td>{{e.amount_spent_on_release}}</td>
+            <td>
+                {% for x in e.guests_present.split(',') %}
+                  <a class="text-white" href="#" data-toggle="popover" title="More Info" data-content="School, Secretary, etc...">{{x}}</a>,
+                {% endfor %}
+            </td>
+          </tr>
+
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+
+
+<br>
+
+{% endblock %}

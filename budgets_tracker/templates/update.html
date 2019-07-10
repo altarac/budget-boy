@@ -1,0 +1,259 @@
+{% extends 'base_in.html' %}
+
+
+
+{% block body %}
+
+<!-- <div class="alert alert-primary" role="alert">
+  Hello {{u}}
+</div> -->
+<br>
+
+<div class="row">
+
+  <div class="col-md-2">
+    <ul class="nav flex-column">
+  <li class="nav-item">
+
+    <a href="/profile/{{u}}" class="nav-link"><span class="badge badge-pill badge-danger">Back</span></a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="/tutorial/{{u}}"><span class="badge badge-pill badge-primary">Tutorial</span></a>
+  </li>
+
+</ul>
+  </div>
+
+
+  <div class="col-md-5">
+    <h3 class="text-center bg-warning">
+      Your budgets:
+    </h3>
+    <table class="table table-dark">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Budget Code</th>
+          <th scope="col">Initial Amount</th>
+          <th scope="col">Spent</th>
+          <th scope="col">Balance</th>
+          <th scope="col">% used</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        {% for line in b %}
+        {% set balance = (line.initial_amount - line.amount_spent) %}
+
+          <tr>
+            <th scope="row">{{loop.index}}</th>
+            <td>{{line.code}}</td>
+            <td>{{line.initial_amount|int}}</td>
+            <td>{{line.amount_spent}}</td>
+            <td>{{balance}}</td>
+            <td>{{((1 - (balance/line.initial_amount)|round(2))*100)|int}} %</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+  </div>
+
+
+  <div class="col-md-5">
+    <h3 class="text-center bg-primary">
+      Create an event:
+    </h3>
+
+    <form method="POST", action="/profile/{{u}}">
+      {{ form.hidden_tag() }}
+
+      <div class="row">
+        <div class="col-md-6">
+          {{form.code.label(class="form-control-label")}}
+          {{form.code(class="form-control form-control-lg")}}
+        </div>
+
+        <div class="col-md-6">
+          {{form.tag.label(class="form-control-label")}}
+          {{form.tag(class="form-control form-control-lg")}}
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          {{form.guests_present.label(class="form-control-label")}}
+          {{form.guests_present(class="form-control form-control-lg")}}
+        </div>
+        <div class="col-md-6">
+          {{form.school.label(class="form-control-label")}}
+          {{form.school(class="form-control form-control-lg")}}
+        </div>
+      </div>
+
+
+    Duration:
+  <div class="form-control">
+
+      {% for i in form.duration_of_event %}
+        <div class="form-check form-check-inline">
+
+          {{i(class='form-check-input')}}
+          {{i.label(class='form-check-label')}}
+
+        </div>
+      {% endfor %}
+  </div>
+
+      <br>
+
+      {{form.date_of_event.label(class="form-label")}}
+      {{form.date_of_event(class="form-control date")}}
+
+
+      <br>
+      <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#exampleModal">
+        Preview and save
+      </button>
+
+
+
+  </div>
+</div>
+
+
+
+<br>
+<br>
+<br>
+
+<!-- modal below -->
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+            <h4>Budget code: <span id="ppp"></span></h4>
+          </div>
+
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <h4>People</h4>
+            <p id="p"></p>
+          </div>
+          <div class="col-md-6">
+            <h4>Schools</h4>
+            <p id="pp"></p>
+          </div>
+          <div class="col-md-12">
+            <h4>Duration</h4>
+            <p id="pppp"></p>
+          </div>
+          <div class="col-md-12">
+            <h4>Date</h4>
+            <p id="ppppp"></p>
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button onfocus="clear()" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        {{form.submit(class="btn btn-outline-success form-control form-control-lg")}}
+        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+      </div>
+    </div>
+  </div>
+</div>
+  </form>
+
+
+  <script type="text/javascript">
+  let t = document.getElementById('guests_present');
+  let c = document.getElementById('code');
+  let s = document.getElementById('school');
+  let d0 = document.getElementById('duration_of_event-0');
+  let d1 = document.getElementById('duration_of_event-1');
+  let dp = document.getElementById('datepicker');
+
+
+  dp.onchange = function() {
+    console.log(dp.value);
+    let ppppp = document.getElementById('ppppp');
+    ppppp.innerHTML = '';
+    ppppp.innerHTML = dp.value;
+
+  }
+
+  d0.onchange = function() {
+    console.log(d0.value);
+    let pppp = document.getElementById('pppp');
+    pppp.innerHTML = '';
+    pppp.innerHTML = 'Half day';
+
+  }
+
+
+  d1.onchange = function() {
+    console.log(d1.value);
+    let pppp = document.getElementById('pppp');
+    pppp.innerHTML = '';
+    pppp.innerHTML = 'Full day';
+
+  }
+
+
+
+
+  let ppp = document.getElementById('ppp');
+  ppp.innerHTML = c.value;
+
+    t.onchange = function() {
+      console.log(t.value);
+      xx = t.value.split(',');
+      let p = document.getElementById('p');
+      p.innerHTML = '';
+      xx.forEach(function(e){
+        p.innerHTML += e + '<br>';
+      });
+    }
+
+    c.onchange = function() {
+      console.log(c.value);
+      xx = c.value.split(',');
+      let ppp = document.getElementById('ppp');
+      ppp.innerHTML = '';
+      xx.forEach(function(e){
+        ppp.innerHTML += e + '<br>';
+      });
+    }
+
+    s.onchange = function() {
+      console.log(s.value);
+      xx = s.value.split(',');
+      let pp = document.getElementById('pp');
+      pp.innerHTML = '';
+      xx.forEach(function(e){
+        pp.innerHTML += e + '<br>';
+      });
+    }
+
+
+  </script>
+<!-- <script>
+$( function() {
+  $( "#datepicker" ).datepicker();
+} );
+</script> -->
+
+
+
+{% endblock %}
