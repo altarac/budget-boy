@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+  <head>
+
+    <script type="text/javascript" charset="UTF-8"
+ src="//cdnjs.cloudflare.com/ajax/libs/jsxgraph/0.99.7/jsxgraphcore.js"></script>
+<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/jsxgraph/0.99.7/jsxgraph.css" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.js"></script>
+<script type="text/javascript" src="https://printjs-4de6.kxcdn.com/print.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/core.js"></script>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.js"></script>
+
+<link rel="icon" href="/static/hand.png">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+
+    <title>Budget Tracker</title>
+  </head>
+  <style media="screen">
+      /* change the background color */
+    .navbar-custom {
+      background-color: teal;
+    }
+    /* change the brand and text color */
+    .navbar-custom .navbar-brand,
+    .navbar-custom .navbar-text {
+      color: rgba(255,255,255,.8);
+    }
+    /* change the link color */
+    .navbar-custom .navbar-nav .nav-link {
+      color: rgba(255,255,255,.5);
+    }
+    /* change the color of active or hovered links */
+    .navbar-custom .nav-item.active .nav-link,
+    .navbar-custom .nav-item:focus .nav-link,
+    .navbar-custom .nav-item:hover .nav-link {
+      color: #ffffff;
+    }
+
+    .btn-teal {
+      background-color: teal;
+
+    }
+    .btn-red {
+      background-color: rgb(205,56,71);
+
+    }
+    .bg-teal {
+      background-color: teal;
+    }
+    .border-teal {
+      border-style: solid;
+      border-color: teal;
+    }
+    /* .sidebar {
+  display: block;
+} */
+  </style>
+  <body class="container-fluid">
+<br>
+
+
+<div id="releaseForms-22">
+
+  <div class="border border-secondary">
+
+
+      <div class="row">
+        <img class="img-fluid mx-auto d-block" src="/static/swlsb.jpg">
+      </div>
+
+
+
+    <div class="row">
+      <div class="col-md-12 text-center">
+        <h4>PEDAGOGICAL SERVICES DEPT (PSD)</h4>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 text-center">
+        <h5>Teacher Release Time Authorization</h5>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 text-center">
+        <p>
+          I, Geoffrey Hipps, Director of the Pedagogical Services Department hereby authorize:
+        </p>
+      </div>
+    </div>
+
+    <div style="margin-top: 150px;"  class="row">
+      <div class="col-md-10 mx-auto">
+        <table class="table table-responsive-md table-secondary table-bordered">
+          <thead>
+            <tr>
+              <!-- <th scope="row"></th> -->
+              <th class="text-center" scope="col">Name of Teacher</th>
+              <th class="text-center" scope="col">School</th>
+              <th class="text-center" scope="col">Name of Workshop</th>
+              <th class="text-center" scope="col">Date of Release</th>
+              <th class="text-center" scope="col">Workshop Budget Code</th>
+              <th class="text-center" scope="col">Project Code (if applicable)</th>
+              <th class="text-center" scope="col">Duration oin Event (mins)</th>
+            </tr>
+          </thead>
+          <tbody>
+
+
+              <tr>
+
+                <td class="text-center">{{g}}</td>
+                <td class="text-center">{{e.school.split(',')[loop.index-1]}}</td>
+                <td class="text-center">{{e.workshop_name}}</td>
+                <td class="text-center">{{(e.date_of_event|string)[:-8]}}</td>
+                <td class="text-center">{{e.budget_code}}</td>
+                <td class="text-center">{{e.project_name}}</td>
+                <td class="text-center">{{e.duration_of_event}}</td>
+
+              </tr>
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+
+
+  <div class="row">
+    <div class="col-md-12 text-center">
+      <p>
+  <h5>KINDLY TAKE NOTE THAT ALL SIGNED PSD RELEASES ARE TO BE SUBMITTED IN ATTACHMENT TO YOUR TIMESHEET(S) & (BILL 90) ABSENT FORMS(S).</h5>
+  </p>
+  </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12 text-center">
+      <p>
+  <h5>PAYROLL WILL NOT PROCESS YOUR (RESPECTIVE SCHOOL) RELEASE(S) WITHOUT THIS FORM.</h5>
+  </p>
+  </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12 text-center">
+      <p>
+  <h5>signature goes here...</h5>
+  </p>
+  </div>
+
+  </div>
+
+
+
+  <div class="row">
+    <img width="90%" style="margin-top: 320px;"  class="img-fluid mx-auto d-block" src="/static/foot.png">
+  </div>
+
+
+
+
+  <hr style = 'page-break-after: always;'>
+
+  </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+        <!-- Optional JavaScript -->
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+
+
+        <script type="text/x-mathjax-config">
+        MathJax.Ajax.config.path["mhchem"] =
+        "https://cdnjs.cloudflare.com/ajax/libs/mathjax-mhchem/3.3.2";
+      MathJax.Hub.Config({
+        TeX: {
+          extensions: ["[mhchem]/mhchem.js"]
+        }
+      });
+    </script>
+
+
+
+
+
+
+<!--
+    <footer class="footer mt-auto py-3">
+  <div class="container">
+    <span class="text-muted">Place sticky footer content here.</span>
+  </div>
+</footer> -->
+
+
+
+      </body>
+
+      <!-- changes the color of answer after clicked -->
+      <script type="text/javascript">
+        document.querySelectorAll('.list-group-item').forEach(function(link) {
+          link.onclick = function() {
+            this.className += link.dataset.color;
+          };
+        });
+
+        $(function () {
+          $('[data-toggle="popover"]').popover()
+        })
+      </script>
+
+
+
+
+
+    </html>

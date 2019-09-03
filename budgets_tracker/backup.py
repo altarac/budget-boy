@@ -2,23 +2,18 @@ from flask import Flask, render_template, url_for, flash, redirect, session, sen
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import desc
 from flask_wtf import FlaskForm
-from wtforms import Form, StringField, PasswordField, SubmitField, BooleanField, IntegerField, RadioField, TextField, SelectField, DateField, FieldList, FormField, FloatField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, IntegerField, RadioField, TextField, SelectField, DateField, FloatField
 from wtforms.validators import DataRequired, Length, Email, EqualTo
 from wtforms.fields.html5 import DateField
 from docx import Document
 from docx.shared import Inches
 import datetime
-import sqlite3
 import numpy as np
+import sqlite3
 import calendar
 import smtplib
 import hashlib
-import pdfkit
-# import requests
-# import WTFormsDynamicFields
 
-# h = hashlib.md5(password.encode())
-# print(h.hexdigest())
 
 
 # UPLOAD_FOLDER = '/downloads/'
@@ -34,37 +29,27 @@ def currencyFormat(value):
     value = float(value)
     return "${:,.2f}".format(value)
 
-
 # database below-------------
 
 db = SQLAlchemy(app)
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(60), unique=True, nullable=False)
+    username = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(200), unique=True, nullable=False)
     password = db.Column(db.String(6), nullable=False)
     budgets_access = db.Column(db.String(100), unique=False, nullable=True)
-    super = db.Column(db.Integer, unique=False, nullable=True, default=0)
+    super_user = db.Column(db.Integer, unique=False, nullable=True, default=0)
 
 
     def __repr__(self):
         return f"User('{self.username}')"
 
-class Schools(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(200), unique=True, nullable=True)
-    secretary_email = db.Column(db.String(200), unique=True, nullable=True)
-
-
-    def __repr__(self):
-        return f"Schools('{self.name}')"
-
 class Budgets(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     # users = db.Column(db.String(40), unique=False, nullable=False)
-    code = db.Column(db.String(100), unique=False, nullable=False)
-    description = db.Column(db.String(120), unique=True, nullable=False)
+    code = db.Column(db.String(20), unique=False, nullable=False)
+    description = db.Column(db.String(120), unique=False, nullable=True)
     project_name = db.Column(db.String(100), unique=False, nullable=True)
     initial_amount = db.Column(db.Float, nullable=False)
     amount_spent = db.Column(db.Float, nullable=True)
@@ -130,16 +115,11 @@ class ModifyUserForm(FlaskForm):
 
 class addToBudgetForm(FlaskForm):
     code = StringField(u'Budget Code')
-    description = StringField(u'Short Description')
     project_name = StringField('Project Code')
-    initial_amount = IntegerField('Initial Amount')
-    amount_spent = IntegerField('Amount Already Spent')
+    description = StringField(u'Short Description')
+    initial_amount = FloatField('Initial amount')
+    amount_spent = FloatField('Amount already spent')
     submit = SubmitField('Create')
-
-class secretary_email(FlaskForm):
-    name = StringField(u'School Name')
-    secretary_email = StringField(u'Email', validators=[Email()])
-    submit = SubmitField('Save')
 
 
 class d(FlaskForm):
@@ -150,10 +130,10 @@ class p(FlaskForm):
     event_id = StringField('Event id')
     submit = SubmitField('Print')
 
+
 class remind(FlaskForm):
     budget_code = SelectField(u'Budget code')
     submit = SubmitField('Send a reminder')
-
 
 
 class UpdateBudgetForm(FlaskForm):
@@ -166,9 +146,6 @@ class UpdateBudgetForm(FlaskForm):
     submit = SubmitField('Submit')
     date_of_event = DateField('Date of event (Y-M-D)', format='%Y-%m-%d', id='datepicker')
 
-# class updateNamesAndSchools(Form):
-#     names = FieldList(FormField(UpdateBudgetForm), min_entries=1)
-#     schools = FieldList(FormField(UpdateBudgetForm), min_entries=1)
 
 class UpdateUserForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=50)])
@@ -201,19 +178,19 @@ def index():
     # db.create_all()
     # p = hashlib.md5('12345'.encode())
     # pword1 = p.hexdigest()
-    #
+
     # p = hashlib.md5('33333'.encode())
     # pword2 = p.hexdigest()
-    #
-    # user1 = User(username='Sam', super=1, password=pword1, budgets_access='55555, 12345', email='saltarachofmann@swlsb.ca')
-    # user2 = User(username='bob', super=0, password=pword2, budgets_access='55555', email='saltarachofmann@swlauriersb.qc.ca')
-    # b1 = Budgets(code= '12345', project_name='ebpp', initial_amount='13000', amount_spent = '1000', description='success project')
-    # b2 = Budgets(code= '55555', project_name='NA', initial_amount='1200', amount_spent = '10', description='AC PLC')
-    #
-    # db.session.add(b1)
-    # db.session.add(b2)
+
+    # user1 = User(username='SamTest', super_user=1, password=pword1, budgets_access='', email='')
+    # # user2 = User(username='BobTest', super_user=0, password=pword2, budgets_access='55555', email='saltarachofmann@swlauriersb.qc.ca')
+    # # b1 = Budgets(code= '12345', project_name='ebpp', initial_amount='13000', amount_spent = '1000', description='success project')
+    # # b2 = Budgets(code= '55555', project_name='NA', initial_amount='1200', amount_spent = '10', description='AC PLC')
+
+    # # db.session.add(b1)
+    # # db.session.add(b2)
     # db.session.add(user1)
-    # db.session.add(user2)
+    # # db.session.add(user2)
     # db.session.commit()
 
     form = LoginForm()
@@ -226,11 +203,10 @@ def index():
 
         users = User.query.filter_by(username=f'{form.username.data}', password=f'{pword}').count()
 
-        # flash(f'Logged in as {form.username.data}', category='success')
         if(users > 0 ):
             user = User.query.filter_by(username=f'{form.username.data}', password=f'{pword}').first()
-            # masteruser = User.query.filter_by(username='Sam', password='12345').first()
-            if(user.super == 1):
+
+            if(user.super_user == 1):
                 session['key']= [True, f'{form.username.data}']
 
             else:
@@ -254,7 +230,7 @@ def profile(name):
     bs2  = []
     for i in bbb:
         balance = i.initial_amount-i.amount_spent
-        bs1.append(str(i.project_name))
+        bs1.append(str(i.code))
         bs2.append(round((1-(balance/i.initial_amount))*100, 2))
     if(u != session['key'][1]):
         return redirect(url_for('index'))
@@ -268,11 +244,11 @@ def profile(name):
     x = User.query.filter_by(username=f'{u}').first()
     codes = x.budgets_access.split(',')
     for c in codes:
-        b = Budgets.query.filter_by(project_name=f'{c.strip()}').first()
+        b = Budgets.query.filter_by(code=f'{c.strip()}').first()
         tables.append(b)
 
     form.code.choices = [((g), (g)) for g in codes]
-    theForm2.budget_code.choices = [((g.project_name), (g.project_name)) for g in Budgets.query.all()]
+    theForm2.budget_code.choices = [((g.code), (g.code)) for g in Budgets.query.all()]
 
     if(len(codes) <= 4):
         b_count = len(codes)
@@ -280,7 +256,7 @@ def profile(name):
         b_count = 4
 
     if form.is_submitted():
-        bb = Budgets.query.filter_by(project_name=f'{str(form.code.data).strip()}')[0]
+        bb = Budgets.query.filter_by(code=f'{str(form.code.data).strip()}')[0]
 
         if(bb.amount_spent + len(form.guests_present.data.split(','))*int(form.duration_of_event.data) > bb.initial_amount):
             flash(f'You have depleted budget {form.code.data}. Please, talk to Admin.')
@@ -321,7 +297,7 @@ def profile(name):
                 msg = f'Subject: {subject} \n\n {body}'
 
 
-                smtp.sendmail(EMAIL_ADDRESS, 'saltarachofmann@swlauriersb.qc.ca', msg)
+                smtp.sendmail(EMAIL_ADDRESS, 'erossi@swlauriersb.qc.ca', msg)
         except:
             pass
 
@@ -353,6 +329,7 @@ def profile(name):
 
     return render_template('profile.html', u = u, tables = tables, tables2 = bbb, events = events, b_count = b_count, x = codes, bs1 =bs1, bs2=bs2, form2 = theForm2)
 
+
 @app.route('/remind/<name>', methods=['GET', 'POST'])
 def reminder(name):
     u = name
@@ -367,7 +344,6 @@ def reminder(name):
         for i in x:
             if(ccc in i.budgets_access.split(',')):
                 people_to_email.append(i.email)
-
 
 
         try:
@@ -399,15 +375,16 @@ def reminder(name):
             pass
 
         if sent == 1:
-            flash(f"Reminders sent {people_to_email}")
+            flash(f"Reminders sent")
         else:
             flash("Emails didn't go through")
 
         return redirect(url_for('profile', name=u))
 
 
+
 @app.route('/profile/<string:name>/update', methods=['POST', 'GET'])
-def update(name):
+def profile2(name):
     u = name
 
     if(u != session['key'][1]):
@@ -415,21 +392,20 @@ def update(name):
 
 
     form = UpdateBudgetForm()
-
-
     tables = []
-    x = User.query.filter_by(username=f'{u}').first()
+    x = User.query.filter_by(username=f'{u}')[0]
     codes = x.budgets_access.split(',')
     for c in codes:
-        b = Budgets.query.filter_by(project_name=(c.strip())).first()
+        b = Budgets.query.filter_by(code=(c.strip())).first()
         tables.append(b)
 
     form.code.choices = [((g.strip()), (g.strip())) for g in codes]
-
+    # code = b.code
+    # initial_amount = b.initial_amount
+    # spent = b.amount_spent
+    # balance = initial_amount-spent
 
     return render_template('update.html', u = u, b= tables, form =form)
-
-
 
 
 @app.route('/profile/<string:name>/delete', methods=['POST', 'GET'])
@@ -478,7 +454,7 @@ def master():
 
 
 
-    people = User.query.filter(User.super != 1).all()
+    people = User.query.filter(User.super_user != 1).all()
     codes = Budgets.query.all()
 
     pro=[]
@@ -578,8 +554,8 @@ def masterprofile2(budget_code):
     u = session['key'][1]
     bc = budget_code
     printform = p()
-    e = Event.query.filter_by(project_name=f'{bc}', is_processed='0').order_by(desc(Event.date_of_event), desc(Event.project_name)).all()
-    e2 = Event.query.filter_by(project_name=f'{bc}').order_by(desc(Event.date_of_event), desc(Event.project_name)).all()
+    e = Event.query.filter_by(budget_code=f'{bc}', is_processed='0')
+    e2 = Event.query.filter_by(budget_code=f'{bc}')
 
 
     return render_template('masterprofile2.html',u =u, events = e, bc= bc, printform = printform, events2 = e2)
@@ -667,7 +643,7 @@ def printing2(budget_code):
     if(session['key'] == False):
         return redirect(url_for('index'))
 
-    e = Event.query.filter_by(project_name=f'{bc}', is_processed='0').all()
+    e = Event.query.filter_by(budget_code=f'{bc}', is_processed='0').all()
     for i in e:
         i.is_processed = 1
     db.session.commit()
@@ -694,8 +670,9 @@ def newbudget():
         # if (bs>0):
         #     flash('Code already exists')
         #     return redirect('newbudget')
-
-        b = Budgets(code= f'{form.code.data}', project_name = f'{form.project_name.data}', initial_amount=f'{form.initial_amount.data}', amount_spent = f'{form.amount_spent.data}', description=f'{form.description.data}')
+        x = float(form.initial_amount.data)
+        y = float(form.amount_spent.data)
+        b = Budgets(code= f'{form.code.data}', project_name = f'{form.project_name.data}', initial_amount=f'{x}', amount_spent = f'{y}', description=f'{form.description.data}')
         db.session.add(b)
         db.session.commit()
         return redirect('newbudget')
@@ -751,7 +728,7 @@ def modifyuser():
     b = Budgets.query.all()
 
     form.username.choices = [(str(g.username), str(g.username)) for g in uu]
-    form.budget_code.choices = [(str(g.project_name), str(g.project_name)) for g in b]
+    form.budget_code.choices = [(str(g.code), str(g.code)) for g in b]
 
 
 
@@ -826,14 +803,13 @@ def superRegister():
             p = hashlib.md5(form.password.data.encode())
             pword = p.hexdigest()
 
-            user = User(username= f'{form.username.data}', password=f'{pword}', budgets_access = f'{form.budgets_access.data}', super=1)
+            user = User(username= f'{form.username.data}', password=f'{pword}', budgets_access = f'{form.budgets_access.data}', super_user=1, email = f'{form.email.data}')
             db.session.add(user)
             db.session.commit()
             return redirect(url_for('index'))
 
 
     return render_template('superRegister.html', form = form, uu = uu)
-
 
 @app.route('/<string:name>/reach')
 def reach(name):
@@ -874,14 +850,12 @@ def reach(name):
     return render_template('reach.html',u=u, events = events, nt = number_of_teachers, s = s, t = total_teachers)
 
 
-
 @app.route('/logout')
 def logout():
     form = LoginForm()
     session.clear()
 
     return redirect(url_for('index'))
-
 
 
 
@@ -949,52 +923,3 @@ def corrections2(id):
 
 
     return render_template('corrections2.html', e=e, u=u, form = form)
-
-
-@app.route('/secretary', methods=['GET','POST'])
-def secretary():
-    if(session['key'][0]==False):
-        return redirect(url_for('index'))
-
-    form = secretary_email()
-    u = session['key'][1]
-
-    email_list = Schools.query.all()
-
-    if request.method == 'POST':
-        x = request.form.get('schools')
-        y = request.form.get('secretary_email')
-        school_emails = Schools.query.filter_by(name=f'{x}')
-        if (school_emails.count())>0:
-            school_emails[0].name=f'{x}'
-            school_emails[0].secretary_email=f'{y}'
-            db.session.commit()
-        else:
-            s = Schools(name=f'{x}', secretary_email=f'{y}')
-            db.session.add(s)
-            db.session.commit()
-            return redirect(url_for('secretary'))
-
-
-    return render_template('secretary_emails.html', form = form, email_list = email_list, u = u)
-
-
-
-
-
-
-
-
-@app.route('/test', methods=['GET','POST'])
-def test():
-
-    rendered = render_template('base.html')
-    pdf = pdfkit.from_string(rendered, False)
-    response = make_response(pdf)
-    response.headers['Content-Type'] = 'application/pdf'
-    response.headers['Content-Disposition'] = 'filemame=out.pdf'
-    return response
-
-
-app.debug=True
-app.run(use_reloader=True, port='8082')
